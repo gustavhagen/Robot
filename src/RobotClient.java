@@ -6,8 +6,6 @@ public class RobotClient {
 
     private static final String HOST = "10.22.192.92";
     private static final int PORT = 42069;
-    //HELOOOOOOO
-    //Endring te no
 
     public static void main(String[] args) throws IOException {
         imageSender = new ImageSender(HOST, PORT);
