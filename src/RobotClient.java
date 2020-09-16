@@ -1,3 +1,6 @@
 public class RobotClient {
-    // Jada
+    public static void main(String[] args)
+    {
+        System.out.println("hei");
+    }
 }
