@@ -37,32 +37,32 @@ public class ImageSender implements Runnable{
                 System.out.println("Picture sent!");
                 System.out.println("Flushed: " + System.currentTimeMillis());
 
-//              Thread.sleep(5000);
+//                Thread.sleep(5000);
 //
-//              ImageIO.write(image2, "jpg", byteArrayOutputStream);
-//              System.out.println(byteArrayOutputStream.size());
+//                ImageIO.write(image2, "jpg", byteArrayOutputStream);
+//                System.out.println(byteArrayOutputStream.size());
 //
-//              size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-//              outputStream.write(size);
-//              outputStream.write(byteArrayOutputStream.toByteArray());
-//              outputStream.flush();
-//              System.out.println("Picture sent!");
-//              System.out.println("Flushed: " + System.currentTimeMillis());
+//                size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+//                outputStream.write(size);
+//                outputStream.write(byteArrayOutputStream.toByteArray());
+//                outputStream.flush();
+//                System.out.println("Picture sent!");
+//                System.out.println("Flushed: " + System.currentTimeMillis());
 //
-//              Thread.sleep(5000);
+//                Thread.sleep(5000);
 //
 //
-//              ImageIO.write(image3, "jpg", byteArrayOutputStream);
-//              System.out.println(byteArrayOutputStream.size());
+//                ImageIO.write(image3, "jpg", byteArrayOutputStream);
+//                System.out.println(byteArrayOutputStream.size());
 //
-//              size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-//              outputStream.write(size);
-//              outputStream.write(byteArrayOutputStream.toByteArray());
-//              outputStream.flush();
-//              System.out.println("Picture sent!");
-//              System.out.println("Flushed: " + System.currentTimeMillis());
+//                size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+//                outputStream.write(size);
+//                outputStream.write(byteArrayOutputStream.toByteArray());
+//                outputStream.flush();
+//                System.out.println("Picture sent!");
+//                System.out.println("Flushed: " + System.currentTimeMillis());
 //
-//              Thread.sleep(5000);
+//                Thread.sleep(5000);
                 imageCounter++;
             }
                 System.out.println("Closing: " + System.currentTimeMillis());
