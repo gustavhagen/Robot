@@ -21,6 +21,7 @@ public class ImageSender implements Runnable{
     @Override
     public void run(){
         try {
+            // GUSTAV TESTER GIT PÅ STASJA
             int imageCounter = 0;
             while (!socket.isClosed() & imageCounter < 3) {
                 image = ImageIO.read(new File("C:\\Users\\Gustav\\Documents\\NTNU\\HØST 2020\\Sanntids Datateknikk\\Prosjekt\\JavaCode\\images\\sau.jpg"));
