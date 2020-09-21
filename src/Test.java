@@ -20,15 +20,15 @@ public class Test {
         // DataOutputStream dos...
         // dos.writeInt(imageSize);
 
-        while (true) {
-            int imageSize = dataInputStream.readInt(); // readInt er en blokkerende moetode, venter på at bilde kommer
-            int bytesReceived = 0;
-            // SJEKK OM bytesInThisPortion RETURNERER KORRKTE TALL
-            do {
-                int bytesInThisPortion = inputStream.readNBytes(buffer, bytesReceived, imageSize - bytesReceived);
-                bytesReceived += bytesInThisPortion;
-            } while (bytesReceived < imageSize);
-            // processImage(buffer);
-        }
+//        while (true) {
+//            int imageSize = dataInputStream.readInt(); // readInt er en blokkerende moetode, venter på at bilde kommer
+//            int bytesReceived = 0;
+//            // SJEKK OM bytesInThisPortion RETURNERER KORRKTE TALL
+//            do {
+//                int bytesInThisPortion = inputStream.readBytes(buffer, bytesReceived, imageSize - bytesReceived);
+//                bytesReceived += bytesInThisPortion;
+//            } while (bytesReceived < imageSize);
+//            // processImage(buffer);
+//        }
     }
 }
