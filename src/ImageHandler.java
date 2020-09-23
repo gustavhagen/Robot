@@ -6,7 +6,6 @@ import java.net.Socket;
 
 public class ImageHandler{
 
-
     private final static String HOST = "10.22.192.92";
     private final static int PORT = 42069;
 
@@ -21,8 +20,8 @@ public class ImageHandler{
             ImageObject imageObject = null;
 
             int imageCount = 0;
-            while(!socket.isClosed() & (imageCount < 10)){
-                File image = new File("C:\\Users\\Gustav\\Desktop\\images\\sau1.jpg");
+            while(!socket.isClosed() & (imageCount < 50)){
+                File image = new File("C:\\Users\\Gustav\\Desktop\\images\\sau.jpg");
                 byte[] byteArray = imageToByteArray(image);
                 imageObject = new ImageObject("Image"+imageCount, image.length(), byteArray, "23.09.2020", "jpg");
                 objectOutputStream.writeObject(imageObject);
