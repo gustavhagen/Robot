@@ -4,7 +4,7 @@ public class ImageObject implements Serializable {
 
     private String name = null;
     private long size = 0;
-    private byte[] imageBytes = new byte[2*14];
+    private byte[] imageBytes = new byte[2 * 14];
     private String date = null;
     private String filetype = null;
 

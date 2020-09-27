@@ -46,5 +46,7 @@ public class Elevator {
 
 
     }
-    public void setElevatorHeight(int height) {}
+
+    public void setElevatorHeight(int height) {
+    }
 }
