@@ -6,6 +6,7 @@ public class Elevator {
     private static final int SLEEP_TIME = 2000;
     private static final int STEPPER_MOTOR_STEPS = 5000;
     private static final int STEPPER_MOTOR_REVOLUTIONS = 2;
+    private static final int STEPPER_MOTOR_FORWARD_STEPS = 5000;
     private static final int STEPPER_MOTOR_FORWARD_MILLISECONDS = 2000;
 
     public Elevator() {
@@ -26,7 +27,7 @@ public class Elevator {
         motor.setStepsPerRevolution(STEPPER_MOTOR_STEPS);
 
         System.out.println("--STEPPER MOTOR-- FORWARD 5000 steps...");
-        motor.step(STEPPER_MOTOR_STEPS);
+        motor.step(STEPPER_MOTOR_FORWARD_STEPS);
         System.out.println("--STEPPER MOTOR-- SLEEP 2 sec...");
         Thread.sleep(SLEEP_TIME);
 
