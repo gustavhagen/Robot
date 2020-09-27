@@ -7,6 +7,8 @@ public class ImageHandler {
 
     private final static String HOST = "10.22.192.92";
     private final static int PORT = 42069;
+    private final static String FILETYPE = "jpg";
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Connecting to server...");
@@ -20,10 +22,10 @@ public class ImageHandler {
 
         int imageCount = 0;
         while (!socket.isClosed() & (imageCount < 10)) {
-            //File image = new File("C:\\Users\\Gustav\\Desktop\\images\\sau1.jpg");
-            File image = new File("/home/pi/image.jpg");
+            File image = new File("C:\\Users\\Gustav\\Desktop\\images\\sau1.jpg");
+            // File image = new File("/home/pi/image.jpg");
             byte[] byteArray = imageToByteArray(image);
-            imageObject = new ImageObject("Image" + imageCount, image.length(), byteArray, "23.09.2020", "jpg");
+            imageObject = new ImageObject("Image" + imageCount, image.length(), byteArray, "23.09.2020", FILETYPE);
             objectOutputStream.writeObject(imageObject);
             System.out.println("Image was sent!");
             // Thread.sleep(2000);
@@ -34,7 +36,7 @@ public class ImageHandler {
     private static final byte[] imageToByteArray(File image) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(image);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+        ImageIO.write(bufferedImage, FILETYPE, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
 }

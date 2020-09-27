@@ -4,16 +4,14 @@ import com.pi4j.io.gpio.*;
 public class Drive {
 
     public static void main(String[] args) {
-        final GpioController gipo = GpioFactory.getInstance();
+        final GpioController gpioController = GpioFactory.getInstance();
 
         final GpioPinDigitalOutput[] pins = {
-                gipo.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-                gipo.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW),
         };
 
-        gipo.setShutdownOptions(true, PinState.LOW, pins);
-        GpioStepperMotorComponent motor = new GpioStepperMotorComponent(pins);
-
-
+        gpioController.setShutdownOptions(true, PinState.LOW, pins);
+        GpioStepperMotorComponent stepperMotor = new GpioStepperMotorComponent(pins);
     }
 }

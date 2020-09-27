@@ -13,36 +13,36 @@ public class Elevator {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        final GpioController gipo = GpioFactory.getInstance();
+        final GpioController gpioController = GpioFactory.getInstance();
 
         final GpioPinDigitalOutput[] pins = {
-                gipo.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-                gipo.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
         };
 
-        gipo.setShutdownOptions(true, PinState.LOW, pins);
-        GpioStepperMotorComponent motor = new GpioStepperMotorComponent(pins);
+        gpioController.setShutdownOptions(true, PinState.LOW, pins);
+        GpioStepperMotorComponent stepperMotor = new GpioStepperMotorComponent(pins);
 
 
-        motor.setStepsPerRevolution(STEPPER_MOTOR_STEPS);
+        stepperMotor.setStepsPerRevolution(STEPPER_MOTOR_STEPS);
 
         System.out.println("--STEPPER MOTOR-- FORWARD 5000 steps...");
-        motor.step(STEPPER_MOTOR_FORWARD_STEPS);
+        stepperMotor.step(STEPPER_MOTOR_FORWARD_STEPS);
         System.out.println("--STEPPER MOTOR-- SLEEP 2 sec...");
         Thread.sleep(SLEEP_TIME);
 
         System.out.println("--STEPPER MOTOR-- FORWARD 2 revolutions...");
-        motor.rotate(STEPPER_MOTOR_REVOLUTIONS);
+        stepperMotor.rotate(STEPPER_MOTOR_REVOLUTIONS);
         System.out.println("--STEPPER MOTOR-- SLEEP 2 sec...");
         Thread.sleep(SLEEP_TIME);
 
         System.out.println("--STEPPER MOTOR-- FORWARD 2 sec...");
-        motor.forward(STEPPER_MOTOR_FORWARD_MILLISECONDS);
+        stepperMotor.forward(STEPPER_MOTOR_FORWARD_MILLISECONDS);
         System.out.println("--STEPPER MOTOR-- SLEEP 2 sec...");
         Thread.sleep(SLEEP_TIME);
 
         System.out.println("--STEPPER MOTOR-- STOPPED...");
-        motor.stop();
+        stepperMotor.stop();
 
 
     }
