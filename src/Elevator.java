@@ -16,8 +16,9 @@ public class Elevator {
         final GpioController gpioController = GpioFactory.getInstance();
 
         final GpioPinDigitalOutput[] pins = {
-                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_27, PinState.LOW),
+                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW),
         };
 
         gpioController.setShutdownOptions(true, PinState.LOW, pins);
