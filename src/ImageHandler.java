@@ -23,24 +23,24 @@ public class ImageHandler {
         OutputStream outputStream = socket.getOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
-        int imageTakeCounter = 0;
-        while (!socket.isClosed() & (imageTakeCounter < 10)) {
+        int imageCounter = 0;
+        while (!socket.isClosed() & (imageCounter < 10)) {
             webcam = Webcam.getDefault();
             webcam.setViewSize(WebcamResolution.VGA.getSize());
             webcam.open();
-            ImageIO.write(webcam.getImage(), "jpg", new File("C:\\Users\\gusta\\OneDrive\\Skrivebord\\images\\iamge" + imageTakeCounter + ".jpg"));
+            ImageIO.write(webcam.getImage(), "jpg", new File("C:\\Users\\gusta\\OneDrive\\Skrivebord\\images\\iamge" + imageCounter + ".jpg"));
             System.out.println("Image was taken!");
             webcam.close();
 
 
             ImageObject imageObject = null;
-            File image = new File("C:\\Users\\gusta\\OneDrive\\Skrivebord\\images\\iamge" + imageTakeCounter + ".jpg");
+            File image = new File("C:\\Users\\gusta\\OneDrive\\Skrivebord\\images\\iamge" + imageCounter + ".jpg");
             byte[] byteArray = imageToByteArray(image);
-            imageObject = new ImageObject("Image" + imageTakeCounter, image.length(), byteArray, "23.09.2020", "jpg");
+            imageObject = new ImageObject("Image" + imageCounter, image.length(), byteArray, "23.09.2020", "jpg");
             objectOutputStream.writeObject(imageObject);
             System.out.println("Image was sent!");
             // Thread.sleep(2000);
-            imageTakeCounter++;
+            imageCounter++;
         }
     }
 
