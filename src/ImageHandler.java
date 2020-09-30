@@ -2,33 +2,30 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 
-public class ImageHandler{
+public class ImageHandler {
 
     private final static String HOST = "10.22.192.92";
+    private final static String SONDRE_HOST = "83.243.218.80";
     private final static int PORT = 42069;
     private static Webcam webcam;
 
     public static void main(String[] args) throws IOException {
 
         System.out.println("Connecting to server...");
-        Socket socket = new Socket(HOST, PORT);
-        System.out.println("Connected to server on: " + HOST + ":" + PORT);
+        Socket socket = new Socket(SONDRE_HOST, PORT);
+        System.out.println("Connected to server on: " + SONDRE_HOST + ":" + PORT);
 
 
         OutputStream outputStream = socket.getOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
         int imageTakeCounter = 0;
-        while(!socket.isClosed() & (imageTakeCounter < 10)) {
+        while (!socket.isClosed() & (imageTakeCounter < 10)) {
             webcam = Webcam.getDefault();
-            for (Dimension supportedSize : webcam.getCustomViewSizes()) {
-                System.out.println(supportedSize.toString());
-            }
             webcam.setViewSize(WebcamResolution.VGA.getSize());
             webcam.open();
             ImageIO.write(webcam.getImage(), "jpg", new File("C:\\Users\\gusta\\OneDrive\\Skrivebord\\images\\iamge" + imageTakeCounter + ".jpg"));
