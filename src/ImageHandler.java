@@ -28,9 +28,14 @@ public class ImageHandler {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         VideoCapture camera = new VideoCapture(0);
         System.out.println("Found Camera!");
-        camera.set(3, 1920);
-        camera.set(4, 1080);
+        camera.set(3, 1920);    // Width of image
+        camera.set(4, 1080);    // Height of image
+//        camera.set(5, 1);       // Framerate
+//        camera.set(20, 0);      // Sharpness
+//        camera.set(39, 0);      // Auto-focus
+//        camera.set(22, 100);    // Gamma
         System.out.println("Resolution Set!");
+
         if (!camera.isOpened()) {
             System.out.println("Camera not opened!");
         }
@@ -50,7 +55,7 @@ public class ImageHandler {
 
             imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "01.10.2020", "jpg");
             objectOutputStream.writeObject(imageObject);
-            System.out.println(imageSize);
+            System.out.println("Size of image" + imageCounter + ": " + imageSize);
             System.out.println("Image was sent!");
             imageCounter++;
             imageObject = null;
