@@ -1,7 +1,7 @@
 
 import com.pi4j.io.gpio.*;
 
-public class Drive {
+public class Drive extends RunUGV {
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;
     private static GpioPinDigitalOutput ena = null;
