@@ -12,6 +12,7 @@ public class RunUGV {
         ena = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
     }
 
+    // HEI DETTE ER EN TEST
     public static void drive(int steps) throws InterruptedException {
         for (int i = 0; i < steps; i++) {
             pul.high();
