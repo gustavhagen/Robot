@@ -1,6 +1,6 @@
 import com.pi4j.io.gpio.*;
 
-public class Elevator {
+public class Elevator{
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;
     private static GpioPinDigitalOutput ena = null;

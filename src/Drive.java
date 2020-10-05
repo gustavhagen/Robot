@@ -1,17 +1,18 @@
-import com.pi4j.component.motor.impl.GpioStepperMotorComponent;
+
 import com.pi4j.io.gpio.*;
 
 public class Drive {
+    private static GpioPinDigitalOutput pul = null;
+    private static GpioPinDigitalOutput dir = null;
+    private static GpioPinDigitalOutput ena = null;
 
     public static void main(String[] args) {
         final GpioController gpioController = GpioFactory.getInstance();
 
-        final GpioPinDigitalOutput[] pins = {
-                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-                gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW),
-        };
+        pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
+        dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
+        ena = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
 
-        gpioController.setShutdownOptions(true, PinState.LOW, pins);
-        GpioStepperMotorComponent stepperMotor = new GpioStepperMotorComponent(pins);
+
     }
 }
