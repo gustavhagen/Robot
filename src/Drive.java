@@ -6,7 +6,7 @@ public class Drive {
     private static GpioPinDigitalOutput dir = null;
     private static GpioPinDigitalOutput ena = null;
 
-    public static void main(String[] args) throws InterruptedException {
+    public Drive() throws InterruptedException {
         GpioController gpioController = GpioFactory.getInstance();
 
         pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
