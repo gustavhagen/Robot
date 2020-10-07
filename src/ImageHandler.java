@@ -16,7 +16,9 @@ public class ImageHandler {
     private final static String SONDRE_HOST = "83.243.218.40";
     private final static int PORT = 42069;
 
+
     public static void main(String[] args) throws IOException {
+
         System.out.println("Connecting to server...");
         Socket socket = new Socket(SONDRE_HOST, PORT);
         System.out.println("Connected to server on: " + SONDRE_HOST + ":" + PORT);
