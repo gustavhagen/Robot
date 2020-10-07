@@ -1,6 +1,6 @@
 import com.pi4j.io.gpio.*;
 
-public class RunUGV extends Drive {
+public class UGVController extends Drive {
     private static GpioController gpioController = GpioFactory.getInstance();
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;

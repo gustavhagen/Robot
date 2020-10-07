@@ -10,24 +10,25 @@ import java.io.*;
 import java.net.Socket;
 
 
-public class ImageHandler {
+public class ImageHandler implements Runnable {
 
     private final static String HOST = "10.22.192.92";
     private final static String SONDRE_HOST = "83.243.218.40";
     private final static int PORT = 42069;
+    private Socket socket;
+    private int totalImages;
+    private OutputStream outputStream;
+    private ObjectOutputStream objectOutputStream;
+    private VideoCapture camera;
 
-
-    public static void main(String[] args) throws IOException {
-
-        System.out.println("Connecting to server...");
-        Socket socket = new Socket(SONDRE_HOST, PORT);
-        System.out.println("Connected to server on: " + SONDRE_HOST + ":" + PORT);
-
-        OutputStream outputStream = socket.getOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+    public ImageHandler(Socket socket, int totalImages) throws IOException {
+        this.socket = socket;
+        this.totalImages = totalImages;
+        outputStream = this.socket.getOutputStream();
+        objectOutputStream = new ObjectOutputStream(outputStream);
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        VideoCapture camera = new VideoCapture(0);
+        camera = new VideoCapture(0);
         System.out.println("Found Camera!");
         camera.set(3, 1920);    // Width of image
         camera.set(4, 1080);    // Height of image
@@ -36,33 +37,39 @@ public class ImageHandler {
 //        camera.set(39, 0);      // Auto-focus
 //        camera.set(22, 100);    // Gamma
         System.out.println("Resolution Set!");
-
         if (!camera.isOpened()) {
             System.out.println("Camera not opened!");
         }
-
-        Mat imageMatrix = new Mat();
-        MatOfByte imageBytes = new MatOfByte();
-        System.out.println("Camera Connected!");
-
-        ImageObject imageObject = null;
-        int imageSize = 0;
-        int imageCounter = 0;
-        while (imageCounter < 10) {
-            camera.read(imageMatrix);
-
-            Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
-            imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
-
-            imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "01.10.2020", "jpg");
-            objectOutputStream.writeObject(imageObject);
-            System.out.println("Size of image" + imageCounter + ": " + imageSize);
-            System.out.println("Image was sent!");
-            imageCounter++;
-            imageObject = null;
-        }
-        System.out.println("Done!");
     }
+
+    @Override
+    public void run() {
+        try {
+            Mat imageMatrix = new Mat();
+            MatOfByte imageBytes = new MatOfByte();
+            System.out.println("Camera Connected!");
+
+            ImageObject imageObject = null;
+            int imageSize = 0;
+            int imageCounter = 0;
+            while (imageCounter < 10) {
+                camera.read(imageMatrix);
+
+                Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
+                imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
+
+                imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "01.10.2020", "jpg");
+                objectOutputStream.writeObject(imageObject);
+                System.out.println("Size of image" + imageCounter + ": " + imageSize);
+                System.out.println("Image was sent!");
+                imageCounter++;
+                imageObject = null;
+            }
+            System.out.println("Done!");
+        } catch (IOException e) {
+        }
+    }
+
 
     private static final byte[] imageToByteArray(File image) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(image);
