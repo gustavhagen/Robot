@@ -1,13 +1,13 @@
 import com.pi4j.io.gpio.*;
 
-public class Elevator {
+public class CameraElevator {
 
     private static GpioController gpioController = GpioFactory.getInstance();
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;
     private static GpioPinDigitalOutput ena = null;
 
-    public Elevator() {
+    public CameraElevator() {
         pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
         dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
         ena = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
@@ -42,6 +42,5 @@ public class Elevator {
 
 
     public void setElevatorHeight(int height) {
-
     }
 }
