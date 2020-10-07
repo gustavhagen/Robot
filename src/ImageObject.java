@@ -2,6 +2,7 @@ import java.io.Serializable;
 
 public class ImageObject implements Serializable {
 
+    private static final long serialVersionUID = 2780459376294108401L;
     private String name = null;
     private long size = 0;
     private byte[] imageBytes = new byte[2 * 14];

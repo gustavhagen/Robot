@@ -45,6 +45,9 @@ public class ImageHandler implements Runnable {
     @Override
     public void run() {
         try {
+            Command command = new Command("Image", totalImages);
+            objectOutputStream.writeObject(command);
+
             Mat imageMatrix = new Mat();
             MatOfByte imageBytes = new MatOfByte();
             System.out.println("Camera Connected!");
@@ -52,7 +55,7 @@ public class ImageHandler implements Runnable {
             ImageObject imageObject = null;
             int imageSize = 0;
             int imageCounter = 0;
-            while (imageCounter < 10) {
+            while (imageCounter < totalImages) {
                 camera.read(imageMatrix);
 
                 Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);

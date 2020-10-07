@@ -10,7 +10,7 @@ public class UGV {
     private final static String SONDRE_HOST = "83.243.218.40";
     private final static int PORT = 42069;
     private final static int POOL_SIZE = 3;
-    private final static int TOTAL_IMAGES = 10;
+    private final static int TOTAL_IMAGES = 100;
 
     private static ExecutorService threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 
