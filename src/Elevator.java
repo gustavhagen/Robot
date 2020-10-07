@@ -22,11 +22,11 @@ public class Elevator {
         }
     }
 
-    public void goUp(int steps) throws InterruptedException {
+    public void moveUp(int steps) throws InterruptedException {
         motorAct(steps);
     }
 
-    public void goDown(int steps) throws InterruptedException {
+    public void moveDown(int steps) throws InterruptedException {
         dir.high();
         motorAct(steps);
     }

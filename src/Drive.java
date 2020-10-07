@@ -1,4 +1,3 @@
-
 import com.pi4j.io.gpio.*;
 
 public class Drive {
@@ -21,7 +20,6 @@ public class Drive {
             pul.low();
             sleepMicro(50);
         }
-        Thread.sleep(1000);
     }
 
     public static void sleepMicro(int delay) {

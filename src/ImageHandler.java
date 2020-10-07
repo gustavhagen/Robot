@@ -12,9 +12,6 @@ import java.net.Socket;
 
 public class ImageHandler implements Runnable {
 
-    private final static String HOST = "10.22.192.92";
-    private final static String SONDRE_HOST = "83.243.218.40";
-    private final static int PORT = 42069;
     private Socket socket;
     private int totalImages;
     private OutputStream outputStream;
