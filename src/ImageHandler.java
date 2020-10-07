@@ -58,7 +58,7 @@ public class ImageHandler implements Runnable {
                 Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
                 imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
 
-                imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "01.10.2020", "jpg");
+                imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "07.10.2020", "jpg");
                 objectOutputStream.writeObject(imageObject);
                 System.out.println("Size of image" + imageCounter + ": " + imageSize);
                 System.out.println("Image was sent!");
