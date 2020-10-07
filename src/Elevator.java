@@ -20,8 +20,17 @@ public class Elevator {
             pul.low();
             sleepMicro(50);
         }
-        Thread.sleep(1000);
     }
+
+    public void goUp(int steps) throws InterruptedException {
+        motorAct(steps);
+    }
+
+    public void goDown(int steps) throws InterruptedException {
+        dir.high();
+        motorAct(steps);
+    }
+
 
     public static void sleepMicro(int delay) {
         long initialTime = System.nanoTime();
