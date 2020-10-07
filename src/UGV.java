@@ -18,7 +18,14 @@ public class UGV {
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to server...");
+            Socket imageSocket = new Socket(HOST, PORT);
+            System.out.println("Connected ImageHandler to server!");
+            Socket UGVSocket = new Socket(HOST, PORT);
+            System.out.println("Connected UGV to server!");
 
+
+            threadPool.execute(new ImageHandler(imageSocket, TOTAL_IMAGES));
+            threadPool.execute(new UGVController(UGVSocket));
 
 
         } catch (UnknownHostException e) {
