@@ -1,3 +1,4 @@
+import com.fazecast.jSerialComm.*;
 import com.pi4j.io.gpio.*;
 
 public class Drive {
@@ -8,9 +9,8 @@ public class Drive {
     public Drive() throws InterruptedException {
         GpioController gpioController = GpioFactory.getInstance();
 
-        pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
-        dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
-        ena = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
+        pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW);
+        dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW);
     }
 
     public static void motorAct(int steps) throws InterruptedException {
