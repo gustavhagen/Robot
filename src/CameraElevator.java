@@ -31,7 +31,6 @@ public class CameraElevator {
         motorAct(steps);
     }
 
-
     public static void sleepMicro(int delay) {
         long initialTime = System.nanoTime();
         long updatedTime = 0;
@@ -39,7 +38,6 @@ public class CameraElevator {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay * 1000) >= updatedTime);
     }
-
 
     public void setElevatorHeight(int height) {
     }

@@ -68,6 +68,7 @@ public class ImageHandler implements Runnable {
             System.out.println("Done!");
         } catch (IOException e) {
             System.out.println("Could not write object.");
+            e.printStackTrace();
         }
     }
 

@@ -13,7 +13,6 @@ public class UGV {
 
     private static ExecutorService threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 
-
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to server...");
@@ -22,10 +21,13 @@ public class UGV {
             Socket UGVSocket = new Socket(HOST, PORT);
             System.out.println("Connected UGV to server!");
 
-
+            System.out.println("Executing ImageHandler...");
             threadPool.execute(new ImageHandler(imageSocket, TOTAL_IMAGES));
-            threadPool.execute(new UGVController(UGVSocket));
+            System.out.println("ImageHandler executed!");
 
+            System.out.println("Executing UGV...");
+            threadPool.execute(new UGVController(UGVSocket));
+            System.out.println("UGV executed!");
 
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");
