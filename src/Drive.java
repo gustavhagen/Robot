@@ -12,7 +12,16 @@ public class Drive {
         dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW);
     }
 
-    public static void motorAct(int steps) throws InterruptedException {
+    public void turnLeft(int steps){
+        motorAct(steps);
+    }
+    public void turnRight(int steps){
+        dir.high();
+        motorAct(steps);
+    }
+
+
+    public void motorAct(int steps) {
         for (int i = 0; i < steps; i++) {
             pul.high();
             sleepMicro(50);

@@ -13,7 +13,7 @@ public class CameraElevator {
         ena = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
     }
 
-    public static void motorAct(int steps) throws InterruptedException {
+    public void motorAct(int steps) throws InterruptedException {
         for (int i = 0; i < steps; i++) {
             pul.high();
             sleepMicro(50);

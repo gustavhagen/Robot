@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 
 public class UGV {
     private final static String HOST = "10.22.192.92";
-    private final static String SONDRE_HOST = "83.243.218.40";
+    private final static String SONDRE_HOST = "83.243.240.94";
     private final static int PORT = 42069;
     private final static int POOL_SIZE = 3;
     private final static int TOTAL_IMAGES = 50;
@@ -16,9 +16,9 @@ public class UGV {
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to server...");
-            Socket imageSocket = new Socket(HOST, PORT);
+            Socket imageSocket = new Socket(SONDRE_HOST, PORT);
             System.out.println("Connected ImageHandler to server!");
-            Socket UGVSocket = new Socket(HOST, PORT);
+            Socket UGVSocket = new Socket(SONDRE_HOST, PORT);
             System.out.println("Connected UGV to server!");
 
             System.out.println("Executing ImageHandler...");
@@ -28,6 +28,8 @@ public class UGV {
             System.out.println("Executing UGV...");
             threadPool.execute(new UGVController(UGVSocket));
             System.out.println("UGV executed!");
+
+
 
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");
