@@ -7,6 +7,10 @@ public class UGVController implements Runnable {
     CameraElevator elevator;
     ImageHandler imageHandler;
     private static final int TEST_STEPS = 4000;
+    private enum UGVState{
+        IDLE, CIRCLE, CAPTURE, SNIIII;
+    }
+    private UGVState state;
 
     public UGVController(Socket socket) {
         this.socket = socket;
@@ -26,6 +30,21 @@ public class UGVController implements Runnable {
             drive.motorAct(TEST_STEPS);
             drive.turnLeft(TEST_STEPS);
             drive.motorAct(TEST_STEPS);
+
+//            switch(state){
+//                case IDLE -> {
+//                }
+//                case CIRCLE -> {
+//                    System.out.println("REEEE");
+//                    drive.motorAct(TEST_STEPS);
+//                }
+//                case CAPTURE -> {
+//                    System.out.println("REE!!!EE");
+//                    captureImageAndWait();
+//                }
+//                case SNIIII -> {
+//                }
+//            }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
