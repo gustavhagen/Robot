@@ -43,7 +43,7 @@ public class ImageHandler implements Runnable {
 
     @Override
     public void run() {
-        while (true){
+        while (true) {
             try {
                 if (takeImage) {
                     Command command = new Command("Image", totalImages);
@@ -76,7 +76,7 @@ public class ImageHandler implements Runnable {
         takeImage = true;
     }
 
-    public boolean isCapturingImage(){
+    public boolean isCapturingImage() {
         return takeImage;
     }
 

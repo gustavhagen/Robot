@@ -7,9 +7,11 @@ public class UGVController implements Runnable {
     CameraElevator elevator;
     ImageHandler imageHandler;
     private static final int TEST_STEPS = 4000;
-    private enum UGVState{
+
+    private enum UGVState {
         IDLE, CIRCLE, CAPTURE, SNIIII;
     }
+
     private UGVState state;
 
     public UGVController(Socket socket) {
@@ -51,8 +53,9 @@ public class UGVController implements Runnable {
         }
     }
 
-    private void captureImageAndWait(){
+    private void captureImageAndWait() {
         imageHandler.captureImage();
-        while(imageHandler.isCapturingImage()){}
+        while (imageHandler.isCapturingImage()) {
+        }
     }
 }

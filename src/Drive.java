@@ -12,10 +12,11 @@ public class Drive {
         dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW);
     }
 
-    public void turnLeft(int steps){
+    public void turnLeft(int steps) {
         motorAct(steps);
     }
-    public void turnRight(int steps){
+
+    public void turnRight(int steps) {
         dir.high();
         motorAct(steps);
     }
