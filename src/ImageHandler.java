@@ -18,7 +18,7 @@ public class ImageHandler implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private VideoCapture camera;
     private int imageCounter = 0;
-    private volatile int imagesToSend;
+    private volatile boolean takeImage;
 
     public ImageHandler(Socket socket, int totalImages) throws IOException {
         this.socket = socket;
@@ -43,9 +43,9 @@ public class ImageHandler implements Runnable {
 
     @Override
     public void run() {
-        try {
-            while (true) {
-                if (imagesToSend > 0) {
+        while (true){
+            try {
+                if (takeImage) {
                     Command command = new Command("Image", totalImages);
                     objectOutputStream.writeObject(command);
 
@@ -54,6 +54,7 @@ public class ImageHandler implements Runnable {
                     System.out.println("Camera Connected!");
 
                     camera.read(imageMatrix);
+                    takeImage = false;
 
                     Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
                     int imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
@@ -63,17 +64,20 @@ public class ImageHandler implements Runnable {
                     System.out.println("Size of image" + imageCounter + ": " + imageSize);
                     System.out.println("Image was sent!");
                     imageCounter++;
-                    imagesToSend--;
                 }
+            } catch (IOException e) {
+                System.out.println("Could not send image.");
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            System.out.println("Could not write object.");
-            e.printStackTrace();
         }
     }
 
-    public void captureImage() {
-        imagesToSend++;
+    public synchronized void captureImage() {
+        takeImage = true;
+    }
+
+    public boolean isCapturingImage(){
+        return takeImage;
     }
 
     private static final byte[] imageToByteArray(File image) throws IOException {

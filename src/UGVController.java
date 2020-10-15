@@ -16,12 +16,13 @@ public class UGVController implements Runnable {
     public void run() {
         try {
             drive.motorAct(TEST_STEPS);
-            imageHandler.captureImage();
+
             elevator.moveUp(TEST_STEPS);
-            Thread.sleep(1000);
+            captureImageAndWait();
+
             elevator.moveDown(TEST_STEPS);
-            imageHandler.captureImage();
-            Thread.sleep(1000);
+            captureImageAndWait();
+
             drive.motorAct(TEST_STEPS);
             drive.turnLeft(TEST_STEPS);
             drive.motorAct(TEST_STEPS);
@@ -29,5 +30,10 @@ public class UGVController implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void captureImageAndWait(){
+        imageHandler.captureImage();
+        while(imageHandler.isCapturingImage()){}
     }
 }
