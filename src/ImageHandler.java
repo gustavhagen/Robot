@@ -17,6 +17,8 @@ public class ImageHandler implements Runnable {
     private OutputStream outputStream;
     private ObjectOutputStream objectOutputStream;
     private VideoCapture camera;
+    private int imageCounter = 0;
+    private volatile int imagesToSend;
 
     public ImageHandler(Socket socket, int totalImages) throws IOException {
         this.socket = socket;
@@ -42,36 +44,37 @@ public class ImageHandler implements Runnable {
     @Override
     public void run() {
         try {
-            Command command = new Command("Image", totalImages);
-            objectOutputStream.writeObject(command);
+            while (true) {
+                if (imagesToSend > 0) {
+                    Command command = new Command("Image", totalImages);
+                    objectOutputStream.writeObject(command);
 
-            Mat imageMatrix = new Mat();
-            MatOfByte imageBytes = new MatOfByte();
-            System.out.println("Camera Connected!");
+                    Mat imageMatrix = new Mat();
+                    MatOfByte imageBytes = new MatOfByte();
+                    System.out.println("Camera Connected!");
 
-            ImageObject imageObject = null;
-            int imageSize = 0;
-            int imageCounter = 0;
-            while (imageCounter < totalImages) {
-                camera.read(imageMatrix);
+                    camera.read(imageMatrix);
 
-                Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
-                imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
+                    Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
+                    int imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
 
-                imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "07.10.2020", "jpg");
-                objectOutputStream.writeObject(imageObject);
-                System.out.println("Size of image" + imageCounter + ": " + imageSize);
-                System.out.println("Image was sent!");
-                imageCounter++;
-                imageObject = null;
+                    ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "07.10.2020", "jpg");
+                    objectOutputStream.writeObject(imageObject);
+                    System.out.println("Size of image" + imageCounter + ": " + imageSize);
+                    System.out.println("Image was sent!");
+                    imageCounter++;
+                    imagesToSend--;
+                }
             }
-            System.out.println("Done!");
         } catch (IOException e) {
             System.out.println("Could not write object.");
             e.printStackTrace();
         }
     }
 
+    public void captureImage() {
+        imagesToSend++;
+    }
 
     private static final byte[] imageToByteArray(File image) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(image);

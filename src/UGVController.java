@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.Socket;
 
 public class UGVController implements Runnable {
@@ -15,15 +16,15 @@ public class UGVController implements Runnable {
     public void run() {
         try {
             drive.motorAct(TEST_STEPS);
+            imageHandler.captureImage();
             elevator.moveUp(TEST_STEPS);
             Thread.sleep(1000);
             elevator.moveDown(TEST_STEPS);
+            imageHandler.captureImage();
             Thread.sleep(1000);
             drive.motorAct(TEST_STEPS);
             drive.turnLeft(TEST_STEPS);
             drive.motorAct(TEST_STEPS);
-
-
 
         } catch (InterruptedException e) {
             e.printStackTrace();
