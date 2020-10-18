@@ -15,7 +15,8 @@ public class Test {
         echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
 
         while (true) {
-            System.out.println("Distance: " + getDistance());
+            System.out.println("Distance: " + getDistance() + " cm");
+            sleepMicro(1000000); // 1 000 000 microseconds = 1 sec
         }
 
 
@@ -64,5 +65,4 @@ public class Test {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay * 1000) >= updatedTime);
     }
-
 }
