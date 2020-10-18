@@ -1,6 +1,9 @@
 import com.pi4j.io.gpio.*;
+import org.omg.CORBA.TIMEOUT;
 
 public class Test {
+    private static final long TIMEOUT = 23200;
+    private static final double DISTANCE_CONSTANT = 17;
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
@@ -12,23 +15,13 @@ public class Test {
         echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
 
         while (true) {
-                trig.high();
-                sleepMicro(10);
-                trig.low();
-
-                while (echo.isLow()) {
-                } //Wait until the ECHO pin gets HIGH
-
-                long startTime = System.nanoTime();
-                while (echo.isHigh()) {
-                } // Wait until the ECHO pin gets LOW
-                long endTime = System.nanoTime();
-
-                System.out.println("Distance: " + (((endTime - startTime) / 1000 / 2) / 29.1) + " cm");
-                sleepMicro(1000000); // Sleep for 1 000 000 microseconds = 1 seconds
+            getDistance();
+            System.out.println("Distance: " + getDistance());
         }
 
-        // TEST FOR DC-MOTOR
+
+    }
+    // TEST FOR DC-MOTOR
 //        int pulseWidth = 1000;
 //        int steps = 10000;
 //        System.out.println("Starting!");
@@ -44,6 +37,25 @@ public class Test {
 //            }
 //        }
 //        System.out.println("Done!");
+
+    private static double getDistance() {
+        trig.high();
+        sleepMicro(10);
+        trig.low();
+
+        long timeOut = System.nanoTime() + TIMEOUT * 1000;
+
+        while (echo.isLow()) {
+            if (System.nanoTime() > timeOut) {
+                return -1;
+            }
+        } //Wait until the ECHO pin gets HIGH
+
+        long startTime = System.nanoTime();
+        while (echo.isHigh()) {
+        } // Wait until the ECHO pin gets LOW
+
+        return (System.nanoTime() - startTime) * DISTANCE_CONSTANT;
     }
 
     public static void sleepMicro(int delay) {
