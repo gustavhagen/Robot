@@ -3,7 +3,7 @@ import org.omg.CORBA.TIMEOUT;
 
 public class Test {
     private static final long TIMEOUT = 23200;
-    private static final double DISTANCE_CONSTANT;
+    private static final double DISTANCE_CONSTANT = 170140e-9;
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
@@ -54,7 +54,7 @@ public class Test {
         while (echo.isHigh()) {
         } // Wait until the ECHO pin gets LOW
 
-        return (System.nanoTime() - startTime) * 2*334*10E9;
+        return (System.nanoTime() - startTime) * DISTANCE_CONSTANT;
     }
 
     public static void sleepMicro(int delay) {
