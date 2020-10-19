@@ -2,7 +2,7 @@ import com.pi4j.io.gpio.*;
 
 public class UltraSonicSensor {
     private static final long TIMEOUT = 23200;
-    private static final double DISTANCE_CONSTANT = 170140e-9;
+    private static final double DISTANCE_CONSTANT = 17014e-9;
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
 
