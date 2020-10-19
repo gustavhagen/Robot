@@ -6,19 +6,19 @@ public class UltraSonicSensor {
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
 
-    public UltraSonicSensor(GpioPinDigitalOutput trig, GpioPinDigitalInput echo){
+    public UltraSonicSensor(GpioPinDigitalOutput trig, GpioPinDigitalInput echo) {
         this.trig = trig;
         this.echo = echo;
     }
 
     public static void main(String[] args) {
-//        //while (true) {
-//            System.out.println("Distance: " + getDistance() + " cm");
-//            sleepMicro(1000000); // 1 000 000 microseconds = 1 sec
-//        //}
+        while (true) {
+        System.out.println("Distance: " + getDistance() + " cm");
+        sleepMicro(1000000); // 1 000 000 microseconds = 1 sec
     }
+}
 
-    public double getDistance() {
+    public static double getDistance() {
         trig.high();
         System.out.println("Set trig HIGH on pin: " + trig.getPin());
         sleepMicro(10);

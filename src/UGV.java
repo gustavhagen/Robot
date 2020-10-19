@@ -29,7 +29,6 @@ public class UGV {
             threadPool.execute(new UGVController(UGVSocket));
             System.out.println("UGV executed!");
 
-
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");
             e.printStackTrace();
