@@ -1,3 +1,5 @@
+import com.pi4j.io.gpio.*;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -6,6 +8,11 @@ public class UGVController implements Runnable {
     Drive drive;
     CameraElevator elevator;
     ImageHandler imageHandler;
+    UltraSonicSensor ultraSonicSensor;
+    private static GpioController gpioController = GpioFactory.getInstance();
+    private static GpioPinDigitalOutput trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
+    private static GpioPinDigitalInput echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
+
     private static final int TEST_STEPS = 4000;
 
     private enum UGVState {
@@ -16,12 +23,14 @@ public class UGVController implements Runnable {
 
     public UGVController(Socket socket) {
         this.socket = socket;
+        ultraSonicSensor = new UltraSonicSensor(trig, echo);
     }
+
 
     @Override
     public void run() {
         try {
-            drive.motorAct(TEST_STEPS);
+            drive.stepperMotorAct(TEST_STEPS);
 
             elevator.moveUp(TEST_STEPS);
             captureImageAndWait();
@@ -29,9 +38,9 @@ public class UGVController implements Runnable {
             elevator.moveDown(TEST_STEPS);
             captureImageAndWait();
 
-            drive.motorAct(TEST_STEPS);
+            drive.stepperMotorAct(TEST_STEPS);
             drive.turnLeft(TEST_STEPS);
-            drive.motorAct(TEST_STEPS);
+            drive.stepperMotorAct(TEST_STEPS);
 
 //            switch(state){
 //                case IDLE -> {

@@ -1,5 +1,4 @@
 import com.pi4j.io.gpio.*;
-import org.omg.CORBA.TIMEOUT;
 
 public class Test {
     private static final long TIMEOUT = 23200;
@@ -13,6 +12,7 @@ public class Test {
         //pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
         trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
         echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
+
 
         while (true) {
             System.out.println("Distance: " + getDistance() + " cm");

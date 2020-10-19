@@ -1,4 +1,5 @@
 import com.pi4j.io.gpio.*;
+import com.pi4j.wiringpi.SoftPwm.*;
 
 public class CameraElevator {
 

@@ -1,34 +1,51 @@
 import com.pi4j.io.gpio.*;
 
 public class Drive {
-    private static GpioPinDigitalOutput pul = null;
-    private static GpioPinDigitalOutput dir = null;
+    private static GpioPinDigitalOutput stepperMotorPul = null;
+    private static GpioPinDigitalOutput stepperMotorDir = null;
     private static GpioPinDigitalOutput ena = null;
+    private static GpioPinDigitalOutput dcMotorPul = null;
 
-    public Drive() throws InterruptedException {
+    private int speed;
+    private int distance;
+    private int acceleration;
+
+    public Drive(int speed, int distance, int acceleration) throws InterruptedException {
+        this.speed = speed;
+        this.distance = distance;
+        this.acceleration = acceleration;
+
         GpioController gpioController = GpioFactory.getInstance();
-
-        pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW);
-        dir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW);
+        stepperMotorPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW);
+        stepperMotorDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW);
+        dcMotorPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_14, PinState.LOW);
     }
 
     public void turnLeft(int steps) {
-        motorAct(steps);
+        stepperMotorAct(steps);
     }
 
     public void turnRight(int steps) {
-        dir.high();
-        motorAct(steps);
+        stepperMotorDir.high();
+        stepperMotorAct(steps);
     }
 
-
-    public void motorAct(int steps) {
+    public void stepperMotorAct(int steps) {
         for (int i = 0; i < steps; i++) {
-            pul.high();
+            stepperMotorPul.high();
             sleepMicro(50);
-            pul.low();
+            stepperMotorPul.low();
             sleepMicro(50);
         }
+    }
+
+    public void setAcceleration(){
+    }
+
+    public void setDir(){
+    }
+
+    public void setSpeed(){
     }
 
     public static void sleepMicro(int delay) {
