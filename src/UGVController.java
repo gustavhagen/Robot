@@ -8,7 +8,7 @@ public class UGVController implements Runnable {
     Drive drive;
     CameraElevator elevator;
     ImageHandler imageHandler;
-    UltraSonicSensor ultraSonicSensor;
+    private static UltraSonicSensor ultraSonicSensor;
     private static GpioController gpioController = GpioFactory.getInstance();
     private static GpioPinDigitalOutput trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
     private static GpioPinDigitalInput echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
@@ -30,13 +30,16 @@ public class UGVController implements Runnable {
     @Override
     public void run() {
         try {
+            ultraSonicSensor.getDistance();
+            System.out.println("Distance: " + ultraSonicSensor.getDistance() + " cm");
+
             drive.stepperMotorAct(TEST_STEPS);
 
             elevator.moveUp(TEST_STEPS);
-            captureImageAndWait();
+            //captureImageAndWait();
 
             elevator.moveDown(TEST_STEPS);
-            captureImageAndWait();
+            //captureImageAndWait();
 
             drive.stepperMotorAct(TEST_STEPS);
             drive.turnLeft(TEST_STEPS);
