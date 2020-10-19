@@ -6,20 +6,23 @@ public class Test {
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
-    private static UltraSonicSensor ultraSonicSensor;
+    Servo servo;
+    StepperMotor stepperMotor;
+    DcMotor dcMotor;
+    UltraSonicSensor ultraSonicSensor;
+
 
 
     public static void main(String[] args) {
         GpioController gpioController = GpioFactory.getInstance();
         trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
         echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
-        UltraSonicSensor ultraSonicSensor = new UltraSonicSensor(trig, echo);
-        //pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
+        pul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
 
 
 
         while (true) {
-            System.out.println("Distance: " + ultraSonicSensor.getDistance() + " cm");
+            System.out.println("Distance: " + getDistance() + " cm");
             sleepMicro(1000000); // 1 000 000 microseconds = 1 sec
         }
 

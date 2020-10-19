@@ -10,7 +10,7 @@ public class Drive {
     private int distance;
     private int acceleration;
 
-    public Drive(int speed, int distance, int acceleration) throws InterruptedException {
+    public Drive(int speed, int distance, int acceleration){
         this.speed = speed;
         this.distance = distance;
         this.acceleration = acceleration;
@@ -37,15 +37,6 @@ public class Drive {
             stepperMotorPul.low();
             sleepMicro(50);
         }
-    }
-
-    public void setAcceleration(){
-    }
-
-    public void setDir(){
-    }
-
-    public void setSpeed(){
     }
 
     public static void sleepMicro(int delay) {
