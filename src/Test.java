@@ -8,7 +8,7 @@ public class Test {
     private static GpioPinDigitalInput echo = null;
     Servo servo;
     StepperMotor stepperMotor;
-    DcMotor dcMotor;
+    DriveMotor driveMotor;
     UltraSonicSensor ultraSonicSensor;
 
 
@@ -28,22 +28,6 @@ public class Test {
 
 
     }
-    // TEST FOR DC-MOTOR
-//        int pulseWidth = 1000;
-//        int steps = 10000;
-//        System.out.println("Starting!");
-//        for(int i = 0; i < steps; i++) {
-//            pul.high();
-//            sleepMicro(pulseWidth);
-//            pul.low();
-//            sleepMicro(20000 - pulseWidth);
-//            if(steps > 500 && pulseWidth < 2000) {
-//                pulseWidth++;
-//            } else {
-//                pulseWidth = 1000;
-//            }
-//        }
-//        System.out.println("Done!");
 
     private static double getDistance() {
         trig.high();

@@ -1,14 +1,14 @@
 import com.pi4j.io.gpio.*;
-
 import java.net.Socket;
 
 public class UGVController implements Runnable {
     Socket socket;
-    Drive drive;
     StepperMotor stepperCamera;
     StepperMotor stepperTurn;
+    Servo cameraServo;
+    DriveMotor driveMotor;
     ImageHandler imageHandler;
-    UltraSonicSensor ultrosonicFrontRight;
+    UltraSonicSensor ultraSonicFrontRight;
     UltraSonicSensor ultrasonicFrontLeft;
     UltraSonicSensor ultrasonicBack;
     UltraSonicSensor ultrasonicSide;
@@ -23,10 +23,10 @@ public class UGVController implements Runnable {
     GpioPinDigitalOutput stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
 
     // Instance pins for DC motor
-    GpioPinDigitalOutput dcMotor = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
+    GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
 
     // Instance pins for Servo
-    GpioPinDigitalOutput servo = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04);
+    GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04);
 
     // Instance pins for Ultrasonic sensors
     GpioPinDigitalOutput trig1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22);
@@ -49,16 +49,19 @@ public class UGVController implements Runnable {
 
     public UGVController(Socket socket) {
         this.socket = socket;
-        ultrosonicFrontRight = new UltraSonicSensor(trig1, echo1);
+        ultraSonicFrontRight = new UltraSonicSensor(trig1, echo1);
         ultrasonicFrontLeft = new UltraSonicSensor(trig2, echo2);
         ultrasonicBack = new UltraSonicSensor(trig3, echo3);
         ultrasonicSide = new UltraSonicSensor(trig4, echo4);
+        stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
+        stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
+        driveMotor = new DriveMotor(driveMotorPin);
+        cameraServo = new Servo(servoPin);
     }
-
 
     public void run() {
         try {
-            drive.stepperMotorAct(TEST_STEPS);
+            driveMotor.driveForward(TEST_STEPS, 1000);
 
             stepperCamera.moveUp(TEST_STEPS);
             captureImageAndWait();
@@ -66,9 +69,9 @@ public class UGVController implements Runnable {
             stepperCamera.moveDown(TEST_STEPS);
             captureImageAndWait();
 
-            drive.stepperMotorAct(TEST_STEPS);
-            drive.turnLeft(TEST_STEPS);
-            drive.stepperMotorAct(TEST_STEPS);
+            driveMotor.driveForward(TEST_STEPS, 1000);
+            stepperTurn.turnLeft(TEST_STEPS);
+            driveMotor.driveForward(TEST_STEPS, 1000);
 
 //            switch(state){
 //                case IDLE -> {
@@ -94,9 +97,5 @@ public class UGVController implements Runnable {
         imageHandler.captureImage();
         while (imageHandler.isCapturingImage()) {
         }
-    }
-
-    private void instancePins() {
-
     }
 }

@@ -37,4 +37,13 @@ public class StepperMotor {
         dir.high();
         stepperMotorAct(steps);
     }
+
+    public void turnLeft(int steps) {
+        stepperMotorAct(steps);
+    }
+
+    public void turnRight(int steps) {
+        dir.high();
+        stepperMotorAct(steps);
+    }
 }

@@ -1,13 +1,13 @@
 import com.pi4j.io.gpio.*;
 
-public class DcMotor {
-    private static GpioPinDigitalOutput pwm = null;
+public class DriveMotor {
+    private GpioPinDigitalOutput pwm = null;
 
-    public DcMotor(GpioPinDigitalOutput pwm) {
+    public DriveMotor(GpioPinDigitalOutput pwm) {
         this.pwm = pwm;
     }
 
-    private void driveForward(int steps, int pulseWidth){
+    public void driveForward(int steps, int pulseWidth){
         motorAct(steps, pulseWidth);
     }
 
