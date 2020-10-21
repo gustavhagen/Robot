@@ -1,4 +1,5 @@
 import com.pi4j.io.gpio.*;
+
 import java.net.Socket;
 
 public class UGVController implements Runnable {
@@ -23,7 +24,7 @@ public class UGVController implements Runnable {
     GpioPinDigitalOutput stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02);
     GpioPinDigitalOutput stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
 
-    // Instance pins for DC motor
+    // Instance pins for DC motor with encoder
     GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
     GpioPinDigitalInput encoder1A = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_05);
     GpioPinDigitalInput encoder1B = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_06);
