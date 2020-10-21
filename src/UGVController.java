@@ -6,6 +6,7 @@ public class UGVController implements Runnable {
     StepperMotor stepperCamera;
     StepperMotor stepperTurn;
     Servo cameraServo;
+    Encoder encoder;
     DriveMotor driveMotor;
     ImageHandler imageHandler;
     UltraSonicSensor ultraSonicFrontRight;
@@ -24,19 +25,21 @@ public class UGVController implements Runnable {
 
     // Instance pins for DC motor
     GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
+    GpioPinDigitalInput encoder1A = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_05);
+    GpioPinDigitalInput encoder1B = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_06);
 
     // Instance pins for Servo
     GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04);
 
     // Instance pins for Ultrasonic sensors
-    GpioPinDigitalOutput trig1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22);
-    GpioPinDigitalInput echo1 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_23, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput trig2 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_24);
-    GpioPinDigitalInput echo2 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_25, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput trig3 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_26);
-    GpioPinDigitalInput echo3 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput trig4 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_28);
-    GpioPinDigitalInput echo4 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN);
+    GpioPinDigitalOutput ultrasonicTrig1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22);
+    GpioPinDigitalInput ultrsonicEcho1 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_23, PinPullResistance.PULL_DOWN);
+    GpioPinDigitalOutput ultrasonicTrig2 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_24);
+    GpioPinDigitalInput ultrsonicEcho2 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_25, PinPullResistance.PULL_DOWN);
+    GpioPinDigitalOutput ultrasonicTrig3 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_26);
+    GpioPinDigitalInput ultrsonicEcho3 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN);
+    GpioPinDigitalOutput ultrasonicTrig4 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_28);
+    GpioPinDigitalInput ultrsonicEcho4 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN);
 
 
     private static final int TEST_STEPS = 4000;
@@ -49,12 +52,13 @@ public class UGVController implements Runnable {
 
     public UGVController(Socket socket) {
         this.socket = socket;
-        ultraSonicFrontRight = new UltraSonicSensor(trig1, echo1);
-        ultrasonicFrontLeft = new UltraSonicSensor(trig2, echo2);
-        ultrasonicBack = new UltraSonicSensor(trig3, echo3);
-        ultrasonicSide = new UltraSonicSensor(trig4, echo4);
+        ultraSonicFrontRight = new UltraSonicSensor(ultrasonicTrig1, ultrsonicEcho1);
+        ultrasonicFrontLeft = new UltraSonicSensor(ultrasonicTrig2, ultrsonicEcho2);
+        ultrasonicBack = new UltraSonicSensor(ultrasonicTrig3, ultrsonicEcho3);
+        ultrasonicSide = new UltraSonicSensor(ultrasonicTrig4, ultrsonicEcho4);
         stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
         stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
+        encoder = new Encoder(encoder1A, encoder1B);
         driveMotor = new DriveMotor(driveMotorPin);
         cameraServo = new Servo(servoPin);
     }
