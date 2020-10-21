@@ -2,9 +2,6 @@ import com.pi4j.io.gpio.*;
 
 public class DriveMotor {
     private GpioPinDigitalOutput pwm = null;
-    private boolean encoderA;
-    private boolean encoderB;
-    private boolean lastA;
 
     public DriveMotor(GpioPinDigitalOutput pwm) {
         this.pwm = pwm;
@@ -27,9 +24,6 @@ public class DriveMotor {
             }
         }
     }
-
-
-
 
     private static void sleepMicro(int delay) {
         long initialTime = System.nanoTime();

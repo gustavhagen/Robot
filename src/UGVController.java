@@ -15,8 +15,7 @@ public class UGVController implements Runnable {
     UltraSonicSensor ultrasonicBack;
     UltraSonicSensor ultrasonicSide;
 
-
-    private static GpioController gpioController = GpioFactory.getInstance();
+    private static final GpioController gpioController = GpioFactory.getInstance();
 
     // Instance pins for Stepper Motors
     GpioPinDigitalOutput stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00);
