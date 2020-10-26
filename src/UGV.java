@@ -20,7 +20,7 @@ public class UGV {
             System.out.println("Connected ImageHandler to server!");
             Socket UGVSocket = new Socket(SONDRE_HOST, PORT);
             System.out.println("Connected UGV to server!");
-
+    
             System.out.println("Executing ImageHandler...");
             threadPool.execute(new ImageHandler(imageSocket, TOTAL_IMAGES));
             System.out.println("ImageHandler executed!");

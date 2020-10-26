@@ -11,7 +11,7 @@ public class DriveMotor {
         motorAct(steps, pulseWidth);
     }
 
-    private void motorAct(int steps, int pulseWidth){
+    public void motorAct(int steps, int pulseWidth){
         for(int i = 0; i < steps; i++) {
             pwm.high();
             sleepMicro(pulseWidth);
