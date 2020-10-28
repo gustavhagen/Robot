@@ -3,10 +3,10 @@ import com.pi4j.io.gpio.*;
 public class Test {
     private static final long TIMEOUT = 23200;
     private static final double DISTANCE_CONSTANT = 170140e-9;
-    private static GpioPinDigitalOutput pul1 = null;
-    private static GpioPinDigitalOutput dir1 = null;
-    private static GpioPinDigitalOutput pul2 = null;
-    private static GpioPinDigitalOutput dir2 = null;
+    private static GpioPinDigitalOutput cameraPul = null;
+    private static GpioPinDigitalOutput cameraDir = null;
+    private static GpioPinDigitalOutput turnPul = null;
+    private static GpioPinDigitalOutput turnDir = null;
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
     private static GpioPinDigitalOutput pwm = null;
@@ -16,21 +16,20 @@ public class Test {
     private static DriveMotor driveMotor;
     private static UltraSonicSensor ultraSonicSensor;
 
-    public Test(){
-        driveMotor = new DriveMotor(pwm);
-        stepperMotor1 = new StepperMotor(pul1, dir1);
-        stepperMotor2 = new StepperMotor(pul2, dir2);
-    }
 
     public static void main(String[] args) throws InterruptedException {
         GpioController gpioController = GpioFactory.getInstance();
         //pwm = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
         //trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
         //echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
-        pul1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
-        dir1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
-        pul2 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
-        dir2 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
+        cameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
+        cameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
+        turnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
+        turnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
+
+        driveMotor = new DriveMotor(pwm);
+        stepperMotor1 = new StepperMotor(cameraPul, cameraDir);
+        stepperMotor2 = new StepperMotor(turnPul, turnDir);
 
         stepperMotor1.moveUp(100);
         stepperMotor2.moveUp(100);
