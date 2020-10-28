@@ -18,18 +18,18 @@ public class UGVController implements Runnable {
     private static final GpioController gpioController = GpioFactory.getInstance();
 
     // Instance pins for Stepper Motors
-    GpioPinDigitalOutput stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
-    GpioPinDigitalOutput stepperCameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02);
-    GpioPinDigitalOutput stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
-    GpioPinDigitalOutput stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00);
+    GpioPinDigitalOutput stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03); // Pin 15
+    GpioPinDigitalOutput stepperCameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02); // Pin 13
+    GpioPinDigitalOutput stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_06); // Pin 22
+    GpioPinDigitalOutput stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Pin 11
 
     // Instance pins for DC motor with encoder
-    GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
+    GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
     GpioPinDigitalInput encoder1A = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_05);
     GpioPinDigitalInput encoder1B = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_06);
 
     // Instance pins for Servo
-    GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04);
+    GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05); // Pin 18
 
     // Instance pins for Ultrasonic sensors
     GpioPinDigitalOutput ultrasonicTrig1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22);

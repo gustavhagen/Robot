@@ -10,6 +10,7 @@ public class Test {
     private static GpioPinDigitalOutput trig = null;
     private static GpioPinDigitalInput echo = null;
     private static GpioPinDigitalOutput pwm = null;
+    private static GpioPinDigitalOutput servoPin = null;
     private static Servo servo;
     private static StepperMotor stepperMotor1;
     private static StepperMotor stepperMotor2;
@@ -19,22 +20,24 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
         GpioController gpioController = GpioFactory.getInstance();
-        //pwm = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03);
+        //pwm = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04);
         //trig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01);
         //echo = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
-        cameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
+        cameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW);
         cameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
         turnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
-        turnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW);
+        turnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_06, PinState.LOW);
+        servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW);
 
         driveMotor = new DriveMotor(pwm);
+        servo = new Servo(servoPin);
         stepperMotor1 = new StepperMotor(cameraPul, cameraDir);
         stepperMotor2 = new StepperMotor(turnPul, turnDir);
 
+        driveMotor.motorAct(10000, 1400);
         stepperMotor1.moveUp(100);
         stepperMotor2.moveUp(100);
 
-        //driveMotor.motorAct(1231, 1000);
 
 //        while (true) {
 //            System.out.println("Distance: " + getDistance() + " cm");
