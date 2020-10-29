@@ -17,6 +17,9 @@ public class UGVController implements Runnable {
 
     private static final GpioController gpioController = GpioFactory.getInstance();
 
+    GpioPinAnalogInput input = gpioController.provisionAnalogInputPin(RaspiPin.GPIO_08);
+
+
     // Instance pins for Stepper Motors
     GpioPinDigitalOutput stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03); // Pin 15
     GpioPinDigitalOutput stepperCameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02); // Pin 13
