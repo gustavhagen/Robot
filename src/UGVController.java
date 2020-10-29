@@ -25,21 +25,21 @@ public class UGVController implements Runnable {
 
     // Instance pins for DC motor with encoder
     GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
-    GpioPinDigitalInput encoder1A = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_05);
-    GpioPinDigitalInput encoder1B = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_06);
+    GpioPinDigitalInput encoder1A = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_28); // Pin 38
+    GpioPinDigitalInput encoder1B = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29); // Pin 40
 
     // Instance pins for Servo
     GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05); // Pin 18
 
     // Instance pins for Ultrasonic sensors
-    GpioPinDigitalOutput ultrasonicTrig1 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_22);
-    GpioPinDigitalInput ultrsonicEcho1 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_23, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput ultrasonicTrig2 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_24);
-    GpioPinDigitalInput ultrsonicEcho2 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_25, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput ultrasonicTrig3 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_26);
-    GpioPinDigitalInput ultrsonicEcho3 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN);
-    GpioPinDigitalOutput ultrasonicTrig4 = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_28);
-    GpioPinDigitalInput ultrsonicEcho4 = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN);
+    GpioPinDigitalOutput frontRightTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_21); // Pin 29
+    GpioPinDigitalInput frontRightEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_22, PinPullResistance.PULL_DOWN); // Pin 31
+    GpioPinDigitalOutput frontLeftTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_23); // Pin 33
+    GpioPinDigitalInput frontLeftEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_24, PinPullResistance.PULL_DOWN); // Pin 35
+    GpioPinDigitalOutput backTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_25); // Pin 37
+    GpioPinDigitalInput backEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_26, PinPullResistance.PULL_DOWN); // Pin 32
+    GpioPinDigitalOutput sideTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_27); // Pin 36
+    GpioPinDigitalInput sideEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN);  // Pin 7
 
 
     private static final int TEST_STEPS = 4000;
@@ -52,10 +52,10 @@ public class UGVController implements Runnable {
 
     public UGVController(Socket socket) {
         this.socket = socket;
-        ultraSonicFrontRight = new UltraSonicSensor(ultrasonicTrig1, ultrsonicEcho1);
-        ultrasonicFrontLeft = new UltraSonicSensor(ultrasonicTrig2, ultrsonicEcho2);
-        ultrasonicBack = new UltraSonicSensor(ultrasonicTrig3, ultrsonicEcho3);
-        ultrasonicSide = new UltraSonicSensor(ultrasonicTrig4, ultrsonicEcho4);
+        ultraSonicFrontRight = new UltraSonicSensor(frontRightTrig, frontRightEcho);
+        ultrasonicFrontLeft = new UltraSonicSensor(frontLeftTrig, frontLeftEcho);
+        ultrasonicBack = new UltraSonicSensor(backTrig, backEcho);
+        ultrasonicSide = new UltraSonicSensor(sideTrig, sideEcho);
         stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
         stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
         encoder = new Encoder(encoder1A, encoder1B);
@@ -64,18 +64,18 @@ public class UGVController implements Runnable {
     }
 
     public void run() {
-        try {
-            driveMotor.driveForward(TEST_STEPS, 1000);
+      //  try {
+            //driveMotor.driveForward(1000, 1550);
 
-            stepperCamera.moveUp(TEST_STEPS);
-            captureImageAndWait();
+            //stepperCamera.moveUp(2000);
+            //captureImageAndWait();
 
-            stepperCamera.moveDown(TEST_STEPS);
-            captureImageAndWait();
+            //stepperCamera.moveDown(1500);
+            //captureImageAndWait();
 
-            driveMotor.driveForward(TEST_STEPS, 1000);
-            stepperTurn.turnLeft(TEST_STEPS);
-            driveMotor.driveForward(TEST_STEPS, 1000);
+            //driveMotor.driveForward(1000, 1550);
+            //stepperTurn.turnLeft(250);
+            //driveMotor.driveForward(1000, 1550);
 
 //            switch(state){
 //                case IDLE -> {
@@ -91,10 +91,9 @@ public class UGVController implements Runnable {
 //                case SNIIII -> {
 //                }
 //            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     private void captureImageAndWait() {

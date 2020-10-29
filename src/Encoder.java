@@ -13,7 +13,7 @@ public class Encoder {
         this.encoderB = encoderB;
     }
 
-    public int enoderAct() {
+    public int encoderAct() {
         A = encoderA.isHigh();
         B = encoderB.isHigh();
         if (A != lastA) {

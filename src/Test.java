@@ -15,7 +15,10 @@ public class Test {
     private static StepperMotor stepperMotor1;
     private static StepperMotor stepperMotor2;
     private static DriveMotor driveMotor;
-    private static UltraSonicSensor ultraSonicSensor;
+    private static UltraSonicSensor frontRightSensor;
+    private static UltraSonicSensor frontLeftSensor;
+    private static UltraSonicSensor sideSensor;
+    private static UltraSonicSensor backSensor;
 
 
     public static void main(String[] args) throws InterruptedException {
@@ -43,26 +46,6 @@ public class Test {
 //            System.out.println("Distance: " + getDistance() + " cm");
 //            sleepMicro(1000000); // 1 000 000 microseconds = 1 sec
 //        }
-    }
-
-    private static double getDistance() {
-        trig.high();
-        sleepMicro(10);
-        trig.low();
-
-        long timeOut = System.nanoTime() + TIMEOUT * 1000;
-
-        while (echo.isLow()) {
-            if (System.nanoTime() > timeOut) {
-                return -1;
-            }
-        } //Wait until the ECHO pin gets HIGH
-
-        long startTime = System.nanoTime();
-        while (echo.isHigh()) {
-        } // Wait until the ECHO pin gets LOW
-
-        return (System.nanoTime() - startTime) * DISTANCE_CONSTANT;
     }
 
     public static void sleepMicro(int delay) {
