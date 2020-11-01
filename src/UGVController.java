@@ -1,5 +1,8 @@
 import com.pi4j.io.gpio.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class UGVController implements Runnable {
@@ -14,6 +17,9 @@ public class UGVController implements Runnable {
     UltraSonicSensor ultrasonicFrontLeft;
     UltraSonicSensor ultrasonicBack;
     UltraSonicSensor ultrasonicSide;
+
+    private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
 
     private static final GpioController gpioController = GpioFactory.getInstance();
 
@@ -53,7 +59,7 @@ public class UGVController implements Runnable {
 
     private UGVState state;
 
-    public UGVController(Socket socket) {
+    public UGVController(Socket socket) throws IOException {
         this.socket = socket;
         ultraSonicFrontRight = new UltraSonicSensor(frontRightTrig, frontRightEcho);
         ultrasonicFrontLeft = new UltraSonicSensor(frontLeftTrig, frontLeftEcho);
@@ -67,18 +73,27 @@ public class UGVController implements Runnable {
     }
 
     public void run() {
-      //  try {
-            //driveMotor.driveForward(1000, 1550);
+        try {
+            Command command = new Command("UGV", 0);
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            //stepperCamera.moveUp(2000);
-            //captureImageAndWait();
+            objectOutputStream.writeObject(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //  try {
+        //driveMotor.driveForward(1000, 1550);
 
-            //stepperCamera.moveDown(1500);
-            //captureImageAndWait();
+        //stepperCamera.moveUp(2000);
+        //captureImageAndWait();
 
-            //driveMotor.driveForward(1000, 1550);
-            //stepperTurn.turnLeft(250);
-            //driveMotor.driveForward(1000, 1550);
+        //stepperCamera.moveDown(1500);
+        //captureImageAndWait();
+
+        //driveMotor.driveForward(1000, 1550);
+        //stepperTurn.turnLeft(250);
+        //driveMotor.driveForward(1000, 1550);
 
 //            switch(state){
 //                case IDLE -> {
@@ -91,7 +106,8 @@ public class UGVController implements Runnable {
 //                    System.out.println("REE!!!EE");
 //                    captureImageAndWait();
 //                }
-//                case SNIIII -> {
+//                case EMERGENCY -> {
+
 //                }
 //            }
         //} catch (InterruptedException e) {

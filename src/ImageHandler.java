@@ -19,6 +19,7 @@ public class ImageHandler implements Runnable {
     private VideoCapture camera;
     private int imageCounter = 0;
     private volatile boolean takeImage;
+    private boolean[] wasd = new boolean[4];
 
     public ImageHandler(Socket socket, int totalImages) throws IOException {
         this.socket = socket;
@@ -26,7 +27,7 @@ public class ImageHandler implements Runnable {
         outputStream = this.socket.getOutputStream();
         objectOutputStream = new ObjectOutputStream(outputStream);
 
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         camera = new VideoCapture(0);
         System.out.println("Found Camera!");
         camera.set(3, 1920);    // Width of image
@@ -46,7 +47,7 @@ public class ImageHandler implements Runnable {
         while (true) {
             try {
                 if (takeImage) {
-                    Command command = new Command("Image", totalImages);
+                    Command command = new Command("Image", totalImages, wasd);
                     objectOutputStream.writeObject(command);
 
                     Mat imageMatrix = new Mat();
