@@ -72,7 +72,7 @@ public class ImageHandler implements Runnable {
         }
     }
 
-    public synchronized void captureImage() {
+    public void captureImage() {        // May be synchronized
         takeImage = true;
     }
 

@@ -32,5 +32,4 @@ public class DriveMotor {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay * 1000) >= updatedTime);
     }
-
 }
