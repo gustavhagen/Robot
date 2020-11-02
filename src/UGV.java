@@ -12,9 +12,10 @@ public class UGV {
     private final static int PORT = 42069;
     private final static int POOL_SIZE = 3;
     private final static int TOTAL_IMAGES = 50;
-    private static Socket imageSocket;
+    private static Socket socket;
     private static Socket UGVSocket;
     private static ObjectOutputStream objectOutputStream;
+    private static ObjectInputStream objectInputStream;
 
     private static ExecutorService threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 
@@ -22,18 +23,17 @@ public class UGV {
         try {
             System.out.println("Connecting to server...");
 
-            imageSocket = new Socket(SONDRE_HOST, PORT);
-            objectOutputStream = new ObjectOutputStream(imageSocket.getOutputStream());
-            System.out.println("Connected ImageHandler to server!");
-            System.out.println("Executing ImageHandler...");
-            threadPool.execute(new ImageHandler(imageSocket, TOTAL_IMAGES));
+            socket = new Socket(SONDRE_HOST, PORT);
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
 
+            //System.out.println("Connected ImageHandler to server!");
+            //System.out.println("Running ImageHandler...");
+            //threadPool.execute(new ImageHandler(socket, TOTAL_IMAGES, objectOutputStream));
 
-            //UGVSocket = new Socket(SONDRE_HOST, PORT);
             System.out.println("Connected UGV to server!");
-            //threadPool.execute(new UGVControllerTest(UGVSocket));
-            System.out.println("Executing UGV...");
-
+            System.out.println("Running UGV...");
+            threadPool.execute(new UGVControllerTest(socket, objectOutputStream, objectInputStream));
 
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");
@@ -42,16 +42,7 @@ public class UGV {
             System.out.println("An I/O error occurred...");
             e.printStackTrace();
         } //catch (InterruptedException e) {
-            //e.printStackTrace();
+           // e.printStackTrace();
         //}
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
-    }
-
-    public void emergencyStop() {
     }
 }

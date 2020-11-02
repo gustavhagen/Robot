@@ -1,7 +1,7 @@
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.*;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 import javax.imageio.ImageIO;
@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 
 
-public class ImageHandler implements Runnable {
+public class ImageHandlerTest implements Runnable {
 
     private Socket socket;
     private int totalImages;
@@ -22,24 +22,10 @@ public class ImageHandler implements Runnable {
     private boolean[] wasd = new boolean[4];
 
 
-    public ImageHandler(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) throws IOException {
+    public ImageHandlerTest(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) throws IOException {
         this.socket = socket;
         this.totalImages = totalImages;
         this.objectOutputStream = objectOutputStream;
-
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        camera = new VideoCapture(0);
-        System.out.println("Found Camera!");
-        camera.set(3, 1920);    // Width of image
-        camera.set(4, 1080);    // Height of image
-//        camera.set(5, 1);       // Framerate
-//        camera.set(20, 0);      // Sharpness
-//        camera.set(39, 0);      // Auto-focus
-//        camera.set(22, 100);    // Gamma
-        System.out.println("Resolution Set!");
-        if (!camera.isOpened()) {
-            System.out.println("Camera not opened!");
-        }
     }
 
     @Override

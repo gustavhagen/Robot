@@ -53,6 +53,7 @@ public class UGVController implements Runnable {
 
     private static final int TEST_STEPS = 4000;
 
+
     private enum UGVState {
         IDLE, CIRCLE, CAPTURE, SNIIII;
     }
@@ -74,7 +75,7 @@ public class UGVController implements Runnable {
 
     public void run() {
         try {
-            Command command = new Command("UGV", 0);
+            Command command = new Command("UGV", 0, null, null);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
