@@ -59,8 +59,8 @@ public class UGVControllerTest implements Runnable {
                         case "manualStop":
                             if (!autoMode) {
                                 if (manualMode) {
-                                    manualDriveThread.interrupt();
-                                    manualTurnThread.interrupt();
+//                                    manualDriveThread.interrupt();
+//                                    manualTurnThread.interrupt();
                                 }
                                 manualMode = false;
                             }
@@ -142,7 +142,7 @@ public class UGVControllerTest implements Runnable {
                 speed++;
             }
             counter++;
-
+            //System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ",d: " + wasd[3]);
             if (counter > 50) {
                 System.out.println("Moving: " + speed);
                 counter = 0;
@@ -239,6 +239,7 @@ public class UGVControllerTest implements Runnable {
                     case 3:
                         if (imageCounter < totalImages) {
                             System.out.println("Capturing image...");
+                            Thread.sleep(5000);
                             captureImageAndWait();
                             System.out.println("Image Captured");
                         }
