@@ -23,9 +23,11 @@ public class Command implements Serializable {
         return value;
     }
 
-    public boolean[] getWasd() { return wasd; }
+    public boolean[] getWasd() {
+        return wasd;
+    }
 
-    public List<Integer> getUGVs(){
+    public List<Integer> getUGVs() {
         return UGVs;
     }
 }

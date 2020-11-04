@@ -3,17 +3,17 @@ import com.pi4j.io.gpio.*;
 public class Servo {
     private static GpioPinDigitalOutput servoPin = null;
 
-    public Servo(GpioPinDigitalOutput servoPin){
+    public Servo(GpioPinDigitalOutput servoPin) {
         this.servoPin = servoPin;
     }
 
-    private void servoAct(int steps, int pulseWidth){
-        for(int i = 0; i < steps; i++) {
+    private void servoAct(int steps, int pulseWidth) {
+        for (int i = 0; i < steps; i++) {
             servoPin.high();
             sleepMicro(pulseWidth);
             servoPin.low();
             sleepMicro(20000 - pulseWidth);
-            if(steps > 500 && pulseWidth < 2000) {
+            if (steps > 500 && pulseWidth < 2000) {
                 pulseWidth++;
             } else {
                 pulseWidth = 1000;

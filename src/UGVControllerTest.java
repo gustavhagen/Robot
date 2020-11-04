@@ -142,7 +142,7 @@ public class UGVControllerTest implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } //catch (InterruptedException e) {
-           // e.printStackTrace();
+        // e.printStackTrace();
         //}
     }
 
@@ -202,7 +202,7 @@ public class UGVControllerTest implements Runnable {
                 }
                 turnCounter++;
                 Thread.sleep(30);
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

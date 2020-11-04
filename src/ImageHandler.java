@@ -22,7 +22,7 @@ public class ImageHandler implements Runnable {
     private boolean[] wasd = new boolean[4];
 
 
-    public ImageHandler(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) throws IOException {
+    public ImageHandler(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) {
         this.socket = socket;
         this.totalImages = totalImages;
         this.objectOutputStream = objectOutputStream;
