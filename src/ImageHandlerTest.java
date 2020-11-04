@@ -14,38 +14,42 @@ public class ImageHandlerTest implements Runnable {
 
     private Socket socket;
     private int totalImages;
-    private OutputStream outputStream;
     private ObjectOutputStream objectOutputStream;
     private VideoCapture camera;
     private int imageCounter = 0;
     private volatile boolean takeImage;
-    private boolean[] wasd = new boolean[4];
+    private volatile boolean run = true;
 
 
-    public ImageHandlerTest(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) throws IOException {
+    public ImageHandlerTest(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) {
         this.socket = socket;
         this.totalImages = totalImages;
         this.objectOutputStream = objectOutputStream;
+
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        camera = new VideoCapture(0);
+        System.out.println("Found Camera!");
+        camera.set(3, 1920);    // Width of image
+        camera.set(4, 1080);    // Height of image
+//        camera.set(5, 1);       // Framerate
+//        camera.set(20, 0);      // Sharpness
+//        camera.set(39, 0);      // Auto-focus
+//        camera.set(22, 100);    // Gamma
+        System.out.println("Resolution Set!");
+        if (!camera.isOpened()) {
+            System.out.println("Camera not opened!");
+        }
     }
 
     @Override
     public void run() {
-        try {
-            Command command = new Command("Image", totalImages, null, null);
-            objectOutputStream.writeObject(command);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        while (true) {
+        while (run) {
             try {
-                if (takeImage) {
+                if (takeImage && imageCounter < totalImages) {
                     Mat imageMatrix = new Mat();
                     MatOfByte imageBytes = new MatOfByte();
-                    System.out.println("Camera Connected!");
 
                     camera.read(imageMatrix);
-                    System.out.println("Image captured!");
                     takeImage = false;
 
                     Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
@@ -53,12 +57,14 @@ public class ImageHandlerTest implements Runnable {
 
                     ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "07.10.2020", "jpg");
                     objectOutputStream.writeObject(imageObject);
-                    System.out.println("Size of image" + imageCounter + ": " + imageSize);
-                    System.out.println("Image was sent!");
                     imageCounter++;
                 }
+                Thread.sleep(100);
             } catch (IOException e) {
                 System.out.println("Could not send image.");
+                e.printStackTrace();
+            }
+            catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
@@ -66,6 +72,10 @@ public class ImageHandlerTest implements Runnable {
 
     public void captureImage() {        // May be synchronized
         takeImage = true;
+    }
+
+    public void stopThread(){
+        run = false;
     }
 
     public boolean isCapturingImage() {

@@ -1,27 +1,28 @@
-import sun.java2d.loops.GraphicsPrimitive;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UGVControllerTest implements Runnable {
     Socket socket;
     ImageHandler imageHandler;
+    ImageHandlerTest imageHandlerTest;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
-    private boolean auto = false;
-    private volatile boolean manual = false;
+    private volatile boolean autoMode = false;
 
-    private volatile boolean turnLeft = false;
-    private volatile boolean turnRight = false;
-    private volatile boolean driveForward = false;
-    private volatile boolean driveBackward = false;
+    private volatile boolean[] wasd;
+    private volatile boolean manualMode;
 
-    private int currentState;
+    private AtomicInteger maxSpeed = new AtomicInteger();
+    private AtomicInteger totalImages = new AtomicInteger();
 
-    Thread turnThread;
+    Thread manualDriveThread;
+    Thread manualTurnThread;
+    Thread imageThread;
+    Thread autonomousThread;
 
     public UGVControllerTest(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
         this.socket = socket;
@@ -30,112 +31,76 @@ public class UGVControllerTest implements Runnable {
     }
 
     public void run() {
-        turnThread = new Thread();
-        turnThread.start();
-
         try {
-            Command command = new Command("UGV", 0, null, null);
-            objectOutputStream.writeObject(command);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Command initCommand = new Command("UGV", 0, null, null);
+            objectOutputStream.writeObject(initCommand);
 
-        try {
             while (true) {
                 Command command = (Command) objectInputStream.readObject();
-                System.out.println(command.getCommand());
 
                 if (command.getCommand() != null) {
-                    boolean[] wasd = command.getWasd();
                     switch (command.getCommand()) {
+
                         case "manual":
-                            System.out.println("Manual mode...");
-                            printDriveDirection(command.getWasd());
+                            if (!autoMode) {
+                                wasd = command.getWasd();
+                                maxSpeed.set(command.getValue());
+                                if (!manualMode) {
+                                    System.out.println("Manual mode...");
+                                    manualMode = true;
+                                    manualDriveThread = new Thread(this::manualDrive);
+                                    manualTurnThread = new Thread(this::manualTurn);
+                                    manualTurnThread.start();
+                                    manualDriveThread.start();
+                                }
+                            }
                             break;
+
+                        case "manualStop":
+                            if (!autoMode) {
+                                if (manualMode) {
+                                    manualDriveThread.interrupt();
+                                    manualTurnThread.interrupt();
+                                }
+                                manualMode = false;
+                            }
+                            break;
+
                         case "start":
-                            System.out.println("Started UGV in automatic control...");
+                            if (!manualMode && command.getValue() >= 9) {
+                                System.out.println("Started UGV in automatic control...");
+                                autoMode = true;
+                                totalImages.set(command.getValue());
+
+                                imageHandlerTest = new ImageHandlerTest(socket, command.getValue(), objectOutputStream);
+                                imageThread = new Thread(imageHandlerTest);
+                                imageThread.start();
+                                autonomousThread = new Thread(this::autonomousDrive);
+                                autonomousThread.start();
+                                //Thread.sleep(60000);
+                            }
                             break;
+
                         case "stop":
-                            System.out.println("Stop UGV in automatic control...");
+                            if (!manualMode) {
+                                System.out.println("Stop UGV in automatic control...");
+                                autoMode = false;
+                                totalImages.set(0);
+                                imageHandlerTest.stopThread();
+//                                imageThread.interrupt();
+//                                autonomousThread.interrupt();
+                            }
+                            break;
+
+                        case "ping":
+                            //System.out.println("Ping from server...");
+                            break;
+
+                        default:
+                            System.out.println("Wrong command!");
                             break;
                     }
                 }
-
-//                if (command.getCommand().equals("manual") && !auto) {
-//                    boolean[] wasd = command.getWasd();
-//                    System.out.println("Directions: w = " + wasd[0] + ", a = " + wasd[1] + ", s = " + wasd[2] + ", d = " + wasd[3]);
-//                    System.out.println("Speed " + command.getValue());
-//                }
-//                if (command.getCommand().equals("start") && !auto) {
-//                    System.out.println("Start automatic control");
-//                    auto = true;
-//                }
-//                if (command.getCommand().equals("stop") && auto) {
-//                    System.out.println("Stop automatic control");
-//                    auto = false;
-//                }
-
-//                int captureStates = command.getValue();
-//                boolean direction = false;
-//                switch (command.getCommand()) {
-//                    case "sne":         // IDLE
-//                        System.out.println("UGV in IDLE-mode. Not driving.");
-//                        changeStateTo(1);
-//                        break;
-//                    case "ani":         // LINE UP
-//                        System.out.println("UGV is lining up for object...");
-//                        changeStateTo(2);
-//                        break;
-//                    case "asd":         // CAPTURE
-//                        System.out.println("UGV is going to capture 3 images in 3 different heights...");
-//                        if (!direction) {
-//                            Thread.sleep(500);
-//                            captureStates(1);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                            Thread.sleep(1000);
-//                            captureStates(2);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                            Thread.sleep(1000);
-//                            captureStates(3);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                        }
-//                        if (direction) {
-//                            Thread.sleep(500);
-//                            captureStates(3);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                            Thread.sleep(1000);
-//                            captureStates(2);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                            Thread.sleep(1000);
-//                            captureStates(1);
-//                            Thread.sleep(1500);
-//                            captureStates(4);
-//                            captureImageAndWait();
-//                        }
-//                        System.out.println("Done capturing 3 images.");
-//                        changeStateTo(3);
-//                        break;
-//                    case "asdc":          // DRIVE
-//                        System.out.println("Continuing circle...");
-//                        System.out.println("UGV moves a short distance...");
-//                        direction = !direction;
-//
-//                        break;
-//                    case "agava":         // STOP
-//                        System.out.println("UGV was stopped by operator.");
-//                        break;
-//                    default:              // DEFAULT
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,76 +111,178 @@ public class UGVControllerTest implements Runnable {
         //}
     }
 
-    private void captureStates(int state) {
-        switch (state) {
-            case 1:
-                System.out.println("Moving to lowest capturing point...");
-                break;
-            case 2:
-                System.out.println("Moving to middle capturing point...");
-                break;
-            case 3:
-                System.out.println("Moving to highest capturing point...");
-                break;
-            case 4:
-                System.out.println("Capturing image...");
-                break;
-        }
-    }
+    private void manualDrive() {
+        int speed = 0;
+        int counter = 0;
 
-    private void printDriveDirection(boolean[] wasd) {
-        int turnCounter = 0;
-        if (wasd[0]) {
-            if (wasd[3]) {
-                System.out.println("Both forward and backward keys are pressed...");
-            }
-            driveForward = true;
-            System.out.println("Driving forward...");
-        }
-        if (wasd[1]) {
-            if (wasd[2]) {
-                System.out.println("Both left and right keys are pressed...");
-            }
-            turnLeft = true;
-            System.out.println("Turning left...");
-        }
-        if (wasd[2]) {
-            if (wasd[1]) {
-                System.out.println("Both left and right keys are pressed...");
-            }
-            driveBackward = true;
-            System.out.println("Driving backward...");
-        }
-        if (wasd[3]) {
-            if (wasd[0]) {
-                System.out.println("Both forward and backward keys are pressed...");
-            }
-            turnRight = true;
-            System.out.println("Turning right...");
-        }
+        boolean forward;
+        boolean backward;
 
-        while (wasd[1] || wasd[3]) {
+        while (manualMode) {
+            forward = wasd[0];
+            backward = wasd[2];
+
+
+            if (forward && !backward && speed < maxSpeed.get()) {
+                speed++;
+            }
+            if (backward && !forward && speed > -maxSpeed.get()) {
+                speed--;
+            }
+            if ((!forward) && (speed > 0)) {
+                speed--;
+            }
+            if ((!backward) && (speed < 0)) {
+                speed++;
+            }
+            if (speed > maxSpeed.get()) {
+                speed--;
+            }
+            if (speed < -maxSpeed.get()) {
+                speed++;
+            }
+            counter++;
+
+            if (counter > 50) {
+                System.out.println("Moving: " + speed);
+                counter = 0;
+            }
+
             try {
-                if (turnCounter >= 0 && turnCounter <= 100) {
-                    turnLeft = true;
-                    System.out.println(turnCounter);
-                }
-                turnCounter++;
-                Thread.sleep(30);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        speed = 0;
     }
 
-    private int changeStateTo(int newState) {
-        currentState = newState;
-        return currentState;
+    private void manualTurn() {
+        int turnPosition = 0;
+        int counter = 0;
+        boolean left;
+        boolean right;
+
+        while (manualMode) {
+            left = wasd[1];
+            right = wasd[3];
+
+            if (right && !left && turnPosition < 10) {
+                turnPosition++;
+            }
+            if (left && !right && turnPosition > -10) {
+                turnPosition--;
+            }
+
+            counter++;
+
+            if (counter > 10) {
+                System.out.println("Turning: " + turnPosition);
+                counter = 0;
+            }
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        turnPosition = 0;
+    }
+
+    private void autonomousDrive() {
+        try {
+            int state = 0;
+            int level = 0;
+            int imageCounter = 0;
+            int totalImages = this.totalImages.get();
+            boolean direction = true;
+            boolean lastDirection = true;
+
+            while (autoMode) {
+                switch (state) {
+                    case 0:
+                        System.out.println("Lining up...");
+                        Thread.sleep(5000);
+                        System.out.println("UGV lined up!");
+                        state = 3;
+                        break;
+
+                    case 1:
+                        System.out.println("Move forward...");
+                        Thread.sleep(2000);
+                        state = 3;
+                        break;
+
+                    case 2:
+                        if (direction && level < 2) {
+                            System.out.println("Moving elevator up...");
+                            Thread.sleep(2500);
+                            System.out.println("Elevator positioned!");
+                            level++;
+                            state = 3;
+                        }
+                        if (!direction && level > 0) {
+                            System.out.println("Moving elevator down...");
+                            Thread.sleep(2500);
+                            System.out.println("Elevator positioned!");
+                            level--;
+                            state = 3;
+                        }
+                        if (level != 1) {
+                            direction = !direction;
+                            System.out.println("Change direction");
+                            state = 3;
+                        }
+                        break;
+
+                    case 3:
+                        if (imageCounter < totalImages) {
+                            System.out.println("Capturing image...");
+                            captureImageAndWait();
+                            System.out.println("Image Captured");
+                        }
+                        imageCounter++;
+
+                        if (imageCounter >= totalImages) {
+                            state = 4;
+                        } else {
+                            state = 2;
+                        }
+                        if (direction != lastDirection) {
+                            state = 1;
+                        }
+                        lastDirection = direction;
+                        break;
+
+                    case 4:
+                        this.totalImages.set(0);
+                        System.out.println("UGV Done capturing images..");
+                        System.out.println("Going back to start position.");
+                        Thread.sleep(6000);
+                        System.out.println("UGV DONE!!");
+                        autoMode = false;
+                        break;
+
+                    default:
+                        System.out.println("Wrong state value");
+                        break;
+
+                }
+            }
+        } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     private void captureImageAndWait() {
-        imageHandler.captureImage();
-        while (imageHandler.isCapturingImage()) {
+        imageHandlerTest.captureImage();
+        while (imageHandlerTest.isCapturingImage()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

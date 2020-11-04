@@ -27,10 +27,6 @@ public class UGV {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-            //System.out.println("Connected ImageHandler to server!");
-            //System.out.println("Running ImageHandler...");
-            //threadPool.execute(new ImageHandler(socket, TOTAL_IMAGES, objectOutputStream));
-
             System.out.println("Connected UGV to server!");
             System.out.println("Running UGV...");
             threadPool.execute(new UGVControllerTest(socket, objectOutputStream, objectInputStream));
