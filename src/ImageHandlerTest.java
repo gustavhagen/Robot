@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 
 
 public class ImageHandlerTest implements Runnable {
@@ -17,7 +18,7 @@ public class ImageHandlerTest implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private VideoCapture camera;
     private int imageCounter = 0;
-    private volatile boolean takeImage;
+    private volatile boolean captureImage;
     private volatile boolean run = true;
 
 
@@ -45,17 +46,17 @@ public class ImageHandlerTest implements Runnable {
     public void run() {
         while (run) {
             try {
-                if (takeImage && imageCounter < totalImages) {
+                if (captureImage && imageCounter < totalImages) {
                     Mat imageMatrix = new Mat();
                     MatOfByte imageBytes = new MatOfByte();
 
                     camera.read(imageMatrix);
-                    takeImage = false;
+                    captureImage = false;
 
                     Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
                     int imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
 
-                    ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "07.10.2020", "jpg");
+                    ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "05.11.2020", "jpg");
                     objectOutputStream.writeObject(imageObject);
                     imageCounter++;
                 }
@@ -71,7 +72,7 @@ public class ImageHandlerTest implements Runnable {
     }
 
     public void captureImage() {        // May be synchronized
-        takeImage = true;
+        captureImage = true;
     }
 
     public void stopThread(){
@@ -79,7 +80,7 @@ public class ImageHandlerTest implements Runnable {
     }
 
     public boolean isCapturingImage() {
-        return takeImage;
+        return captureImage;
     }
 
     private static final byte[] imageToByteArray(File image) throws IOException {

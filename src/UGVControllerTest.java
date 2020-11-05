@@ -142,7 +142,7 @@ public class UGVControllerTest implements Runnable {
                 speed++;
             }
             counter++;
-            //System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ",d: " + wasd[3]);
+            System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ",d: " + wasd[3]);
             if (counter > 50) {
                 System.out.println("Moving: " + speed);
                 counter = 0;
