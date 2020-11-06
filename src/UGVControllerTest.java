@@ -34,6 +34,8 @@ public class UGVControllerTest implements Runnable {
         try {
             Command initCommand = new Command("UGV", 0, null, null);
             objectOutputStream.writeObject(initCommand);
+            System.out.println(">>> Sent command to user telling this is an UGV!");
+
 
             while (true) {
                 Command command = (Command) objectInputStream.readObject();
@@ -46,7 +48,7 @@ public class UGVControllerTest implements Runnable {
                                 wasd = command.getWasd();
                                 maxSpeed.set(command.getValue());
                                 if (!manualMode) {
-                                    System.out.println("Manual mode...");
+                                    System.out.println("[UGV] Entered manual mode...");
                                     manualMode = true;
                                     manualDriveThread = new Thread(this::manualDrive);
                                     manualTurnThread = new Thread(this::manualTurn);
@@ -68,7 +70,7 @@ public class UGVControllerTest implements Runnable {
 
                         case "start":
                             if (!manualMode && command.getValue() >= 9) {
-                                System.out.println("Started UGV in automatic control...");
+                                System.out.println("[UGV] Started UGV in automatic control...");
                                 autoMode = true;
                                 totalImages.set(command.getValue());
 
@@ -83,7 +85,7 @@ public class UGVControllerTest implements Runnable {
 
                         case "stop":
                             if (!manualMode) {
-                                System.out.println("Stop UGV in automatic control...");
+                                System.out.println("[UGV] Stopped UGV in automatic control...");
                                 autoMode = false;
                                 totalImages.set(0);
                                 imageHandlerTest.stopThread();
@@ -144,7 +146,7 @@ public class UGVControllerTest implements Runnable {
             counter++;
             System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ",d: " + wasd[3]);
             if (counter > 50) {
-                System.out.println("Moving: " + speed);
+                System.out.println("[UGV] Moving: " + speed);
                 counter = 0;
             }
 
@@ -177,7 +179,7 @@ public class UGVControllerTest implements Runnable {
             counter++;
 
             if (counter > 10) {
-                System.out.println("Turning: " + turnPosition);
+                System.out.println("[UGV] Turning: " + turnPosition);
                 counter = 0;
             }
 
@@ -202,46 +204,47 @@ public class UGVControllerTest implements Runnable {
             while (autoMode) {
                 switch (state) {
                     case 0:
-                        System.out.println("Lining up...");
+                        System.out.println("[UGV] Lining up...");
                         Thread.sleep(5000);
-                        System.out.println("UGV lined up!");
+                        System.out.println("[UGV] lined up!");
                         state = 3;
                         break;
 
                     case 1:
-                        System.out.println("Move forward...");
+                        System.out.println("[UGV] Moving forward...");
                         Thread.sleep(2000);
                         state = 3;
                         break;
 
                     case 2:
                         if (direction && level < 2) {
-                            System.out.println("Moving elevator up...");
+                            System.out.println("[UGV] Moving camera up...");
                             Thread.sleep(2500);
-                            System.out.println("Elevator positioned!");
+                            System.out.println("[UGV] Elevator positioned!");
                             level++;
                             state = 3;
                         }
                         if (!direction && level > 0) {
-                            System.out.println("Moving elevator down...");
+                            System.out.println("[UGV] Moving camera down...");
                             Thread.sleep(2500);
-                            System.out.println("Elevator positioned!");
+                            System.out.println("[UGV] Elevator positioned!");
                             level--;
                             state = 3;
                         }
                         if (level != 1) {
                             direction = !direction;
-                            System.out.println("Change direction");
+                            System.out.println("[UGV] Changed direction on the camera elevator!");
                             state = 3;
                         }
                         break;
 
                     case 3:
                         if (imageCounter < totalImages) {
-                            System.out.println("Capturing image...");
+                            System.out.println("[UGV] Capturing image...");
                             Thread.sleep(5000);
                             captureImageAndWait();
-                            System.out.println("Image Captured");
+                            System.out.println("[UGV] Image Captured!");
+                            System.out.println(">>> Sent Image to server!");
                         }
                         imageCounter++;
 
@@ -258,8 +261,8 @@ public class UGVControllerTest implements Runnable {
 
                     case 4:
                         this.totalImages.set(0);
-                        System.out.println("UGV Done capturing images..");
-                        System.out.println("Going back to start position.");
+                        System.out.println("[UGV] Done capturing images...");
+                        System.out.println("[UGV] Going back to start position!");
                         Thread.sleep(6000);
                         System.out.println("UGV DONE!!");
                         autoMode = false;
