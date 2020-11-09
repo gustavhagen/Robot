@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UGVController implements Runnable {
     Socket socket;
@@ -20,6 +21,16 @@ public class UGVController implements Runnable {
 
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
+
+    private AtomicInteger maxSpeed = new AtomicInteger();
+
+    private volatile boolean autoMode = false;
+
+    private volatile boolean[] wasd;
+    private volatile boolean manualMode;
+
+    Thread manualDriveThread;
+    Thread manualTurnThread;
 
     private static final GpioController gpioController = GpioFactory.getInstance();
 
@@ -53,13 +64,6 @@ public class UGVController implements Runnable {
 
     private static final int TEST_STEPS = 4000;
 
-
-    private enum UGVState {
-        IDLE, CIRCLE, CAPTURE, SNIIII;
-    }
-
-    private UGVState state;
-
     public UGVController(Socket socket) throws IOException {
         this.socket = socket;
         ultraSonicFrontRight = new UltraSonicSensor(frontRightTrig, frontRightEcho);
@@ -75,45 +79,132 @@ public class UGVController implements Runnable {
 
     public void run() {
         try {
-            Command command = new Command("UGV", 0, null, null);
+            Command initCommand = new Command("UGV", 0, null, null);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            objectOutputStream.writeObject(command);
+            objectOutputStream.writeObject(initCommand);
+            while (true) {
+                Command command = (Command) objectInputStream.readObject();
+
+                if (command.getCommand() != null) {
+                    switch (command.getCommand()) {
+
+                        case "manual":
+                            if (!autoMode) {
+                                wasd = command.getWasd();
+                                maxSpeed.set(command.getValue());
+                                if (!manualMode) {
+                                    System.out.println("Manual mode...");
+                                    manualMode = true;
+                                    manualDriveThread = new Thread(this::manualDrive);
+                                    manualTurnThread = new Thread(this::manualTurn);
+                                    manualTurnThread.start();
+                                    manualDriveThread.start();
+                                }
+                            }
+                            break;
+
+                        case "manualStop":
+                            if (!autoMode) {
+                                if (manualMode) {
+//                                    manualDriveThread.interrupt();
+//                                    manualTurnThread.interrupt();
+                                }
+                                manualMode = false;
+                            }
+                            break;
+
+                        case "ping":
+                            //System.out.println("Ping from server...");
+                            break;
+
+                        default:
+                            System.out.println("Wrong command!");
+                            break;
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        //  try {
-        //driveMotor.driveForward(1000, 1550);
-
-        //stepperCamera.moveUp(2000);
-        //captureImageAndWait();
-
-        //stepperCamera.moveDown(1500);
-        //captureImageAndWait();
-
-        //driveMotor.driveForward(1000, 1550);
-        //stepperTurn.turnLeft(250);
-        //driveMotor.driveForward(1000, 1550);
-
-//            switch(state){
-//                case IDLE -> {
-//                }
-//                case CIRCLE -> {
-//                    System.out.println("REEEE");
-//                    drive.motorAct(TEST_STEPS);
-//                }
-//                case CAPTURE -> {
-//                    System.out.println("REE!!!EE");
-//                    captureImageAndWait();
-//                }
-//                case EMERGENCY -> {
-
-//                }
-//            }
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } //catch (InterruptedException e) {
+        // e.printStackTrace();
         //}
+    }
+
+
+    private void manualDrive() {
+        int speed = 0;
+        //int counter = 0;
+
+        boolean forward;
+        boolean backward;
+
+        while (manualMode) {
+            forward = wasd[0];
+            backward = wasd[2];
+
+
+            if (forward && !backward && speed < maxSpeed.get()) {
+                speed++;
+            }
+            if (backward && !forward && speed > -maxSpeed.get()) {
+                speed--;
+            }
+            if ((!forward) && (speed > 0)) {
+                speed--;
+            }
+            if ((!backward) && (speed < 0)) {
+                speed++;
+            }
+            if (speed > maxSpeed.get()) {
+                speed--;
+            }
+            if (speed < -maxSpeed.get()) {
+                speed++;
+            }
+            driveMotor.setMotorSpeed(speed);
+            //counter++;
+            //System.out.println("w: " + wasd[0] + ", a: " + wasd[1] + ", s: " + wasd[2] + ", d: " + wasd[3]);
+            //if (counter > 50) {
+            //    System.out.println("Moving: " + speed);
+            //    counter = 0;
+            //}
+        }
+        speed = 0;
+    }
+
+    private void manualTurn() {
+        int turnPosition = 0;
+        int maxTurnPosition = 500;
+        //int counter = 0;
+        boolean left;
+        boolean right;
+
+        int speed = 50; // Speed can be between 10 and 100. 100 is slowest and 10 is fastest.
+
+        while (manualMode) {
+            left = wasd[1];
+            right = wasd[3];
+
+            if (right && !left && turnPosition < maxTurnPosition) {
+                turnPosition++;
+                stepperTurn.stepperMotorAct(turnPosition, speed);
+            }
+            if (left && !right && turnPosition > -maxTurnPosition) {
+                turnPosition--;
+                stepperTurn.stepperMotorAct(turnPosition, speed);
+            }
+            //counter++;
+
+            //if (counter > 10) {
+            //    System.out.println("Turning: " + turnPosition);
+            //    counter = 0;
+            //}
+        }
+        turnPosition = 0;
     }
 
     private void captureImageAndWait() {

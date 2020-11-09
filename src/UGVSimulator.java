@@ -4,7 +4,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UGVControllerTest implements Runnable {
+public class UGVSimulator implements Runnable {
     Socket socket;
     ImageHandler imageHandler;
     ImageHandlerTest imageHandlerTest;
@@ -19,12 +19,14 @@ public class UGVControllerTest implements Runnable {
     private AtomicInteger maxSpeed = new AtomicInteger();
     private AtomicInteger totalImages = new AtomicInteger();
 
+
+
     Thread manualDriveThread;
     Thread manualTurnThread;
     Thread imageThread;
     Thread autonomousThread;
 
-    public UGVControllerTest(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
+    public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
         this.socket = socket;
         this.objectOutputStream = objectOutputStream;
         this.objectInputStream = objectInputStream;
@@ -142,7 +144,7 @@ public class UGVControllerTest implements Runnable {
                 speed++;
             }
             counter++;
-            System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ",d: " + wasd[3]);
+            System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ", d: " + wasd[3]);
             if (counter > 50) {
                 System.out.println("Moving: " + speed);
                 counter = 0;

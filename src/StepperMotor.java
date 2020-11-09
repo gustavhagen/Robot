@@ -4,17 +4,29 @@ public class StepperMotor {
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;
 
+    private int currentPosition = 0;
+
     public StepperMotor(GpioPinDigitalOutput pul, GpioPinDigitalOutput dir) {
         this.pul = pul;
         this.dir = dir;
     }
 
-    public void stepperMotorAct(int steps) {
-        for (int i = 0; i < steps; i++) {
+    public void stepperMotorAct(int steps, int speed) {
+        if (currentPosition <= steps) {
+            dir.high();
             pul.high();
             sleepMicro(50);
             pul.low();
+            sleepMicro(speed);
+            currentPosition++;
+        }
+        if (currentPosition >= steps) {
+            dir.low();
+            pul.high();
             sleepMicro(50);
+            pul.low();
+            sleepMicro(speed);
+            currentPosition--;
         }
     }
 
@@ -24,26 +36,5 @@ public class StepperMotor {
         do {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay * 1000) >= updatedTime);
-    }
-
-    public void setElevatorHeight(int height) {
-    }
-
-    public void moveUp(int steps) throws InterruptedException {
-        stepperMotorAct(steps);
-    }
-
-    public void moveDown(int steps) throws InterruptedException {
-        dir.high();
-        stepperMotorAct(steps);
-    }
-
-    public void turnLeft(int steps) {
-        stepperMotorAct(steps);
-    }
-
-    public void turnRight(int steps) {
-        dir.high();
-        stepperMotorAct(steps);
     }
 }
