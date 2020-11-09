@@ -80,10 +80,8 @@ public class UGVController implements Runnable {
     public void run() {
         try {
             Command initCommand = new Command("UGV", 0, null, null);
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
-            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-
             objectOutputStream.writeObject(initCommand);
+
             while (true) {
                 Command command = (Command) objectInputStream.readObject();
 
@@ -183,7 +181,7 @@ public class UGVController implements Runnable {
         boolean left;
         boolean right;
 
-        int speed = 50; // Speed can be between 10 and 100. 100 is slowest and 10 is fastest.
+        int speed = 100; // Speed can be between 10 and 100. 100 is slowest and 10 is fastest.
 
         while (manualMode) {
             left = wasd[1];
@@ -196,6 +194,10 @@ public class UGVController implements Runnable {
             if (left && !right && turnPosition > -maxTurnPosition) {
                 turnPosition--;
                 stepperTurn.stepperMotorAct(turnPosition, speed);
+            } if(!left && !right && turnPosition > 0){
+                turnPosition--;
+            }if(!left && !right && turnPosition < 0){
+                turnPosition++;
             }
             //counter++;
 
