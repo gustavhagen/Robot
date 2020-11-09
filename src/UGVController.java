@@ -64,8 +64,11 @@ public class UGVController implements Runnable {
 
     private static final int TEST_STEPS = 4000;
 
-    public UGVController(Socket socket) throws IOException {
+    public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) throws IOException {
         this.socket = socket;
+        this.objectInputStream = objectInputStream;
+        this.objectOutputStream = objectOutputStream;
+
         ultraSonicFrontRight = new UltraSonicSensor(frontRightTrig, frontRightEcho);
         ultrasonicFrontLeft = new UltraSonicSensor(frontLeftTrig, frontLeftEcho);
         ultrasonicBack = new UltraSonicSensor(backTrig, backEcho);
