@@ -8,7 +8,7 @@ public class DriveMotor {
     }
 
     public void setMotorSpeed(int speed) {
-        int pulseWidth = 1550 + -speed*5;
+        int pulseWidth = 1450 + -speed*5;
         pwm.high();
         sleepMicro(pulseWidth);
         pwm.low();

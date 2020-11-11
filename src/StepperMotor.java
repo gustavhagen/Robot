@@ -5,36 +5,39 @@ public class StepperMotor {
     private static GpioPinDigitalOutput dir = null;
 
     private int currentPosition = 0;
+    private long lastPulseTime = 0;
 
     public StepperMotor(GpioPinDigitalOutput pul, GpioPinDigitalOutput dir) {
         this.pul = pul;
         this.dir = dir;
     }
 
-    public void stepperMotorAct(int steps, int speed) {
-        if (currentPosition <= steps) {
+    public void stepperMotorAct(int steps, long speed) {
+        if (currentPosition < steps) {
             dir.high();
+            sleepNano(speed-(System.nanoTime() - lastPulseTime));
             pul.high();
-            sleepMicro(50);
+            sleepNano(speed);
             pul.low();
-            sleepMicro(speed);
+            lastPulseTime = System.nanoTime();
             currentPosition++;
         }
-        if (currentPosition >= steps) {
+        if (currentPosition > steps) {
             dir.low();
+            sleepNano(speed-(System.nanoTime() - lastPulseTime));
             pul.high();
-            sleepMicro(50);
+            sleepNano(speed);
             pul.low();
-            sleepMicro(speed);
+            lastPulseTime = System.nanoTime();
             currentPosition--;
         }
     }
 
-    public static void sleepMicro(int delay) {
+    public static void sleepNano(long delay) {
         long initialTime = System.nanoTime();
         long updatedTime = 0;
         do {
             updatedTime = System.nanoTime();
-        } while ((initialTime + delay * 1000) >= updatedTime);
+        } while ((initialTime + delay) >= updatedTime);
     }
 }
