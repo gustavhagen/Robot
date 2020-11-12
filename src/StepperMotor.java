@@ -4,46 +4,40 @@ public class StepperMotor {
     private static GpioPinDigitalOutput pul = null;
     private static GpioPinDigitalOutput dir = null;
 
+    private int currentPosition = 0;
+    private long lastPulseTime = 0;
+
     public StepperMotor(GpioPinDigitalOutput pul, GpioPinDigitalOutput dir) {
         this.pul = pul;
         this.dir = dir;
     }
 
-    public void stepperMotorAct(int steps) {
-        for (int i = 0; i < steps; i++) {
+    public void stepperMotorAct(int steps, long speed) {
+        if (currentPosition < steps) {
+            dir.high();
+            sleepNano(speed-(System.nanoTime() - lastPulseTime));
             pul.high();
-            sleepMicro(50);
+            sleepNano(speed);
             pul.low();
-            sleepMicro(50);
+            lastPulseTime = System.nanoTime();
+            currentPosition++;
+        }
+        if (currentPosition > steps) {
+            dir.low();
+            sleepNano(speed-(System.nanoTime() - lastPulseTime));
+            pul.high();
+            sleepNano(speed);
+            pul.low();
+            lastPulseTime = System.nanoTime();
+            currentPosition--;
         }
     }
 
-    public static void sleepMicro(int delay) {
+    public static void sleepNano(long delay) {
         long initialTime = System.nanoTime();
         long updatedTime = 0;
         do {
             updatedTime = System.nanoTime();
-        } while ((initialTime + delay * 1000) >= updatedTime);
-    }
-
-    public void setElevatorHeight(int height) {
-    }
-
-    public void moveUp(int steps) throws InterruptedException {
-        stepperMotorAct(steps);
-    }
-
-    public void moveDown(int steps) throws InterruptedException {
-        dir.high();
-        stepperMotorAct(steps);
-    }
-
-    public void turnLeft(int steps) {
-        stepperMotorAct(steps);
-    }
-
-    public void turnRight(int steps) {
-        dir.high();
-        stepperMotorAct(steps);
+        } while ((initialTime + delay) >= updatedTime);
     }
 }

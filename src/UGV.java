@@ -29,7 +29,8 @@ public class UGV {
 
             System.out.println("Connected UGV to server!");
             System.out.println("Running UGV...");
-            threadPool.execute(new UGVControllerTest(socket, objectOutputStream, objectInputStream));
+            threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
+            threadPool.execute(new UGVController(socket, objectInputStream, objectOutputStream));
 
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");

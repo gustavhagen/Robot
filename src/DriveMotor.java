@@ -7,22 +7,12 @@ public class DriveMotor {
         this.pwm = pwm;
     }
 
-    public void driveForward(int steps, int pulseWidth) {
-        motorAct(steps, pulseWidth);
-    }
-
-    public void motorAct(int steps, int pulseWidth) {
-        for (int i = 0; i < steps; i++) {
-            pwm.high();
-            sleepMicro(pulseWidth);
-            pwm.low();
-            sleepMicro(20000 - pulseWidth);
-            if (steps > 500 && pulseWidth < 2000) {
-                pulseWidth++;
-            } else {
-                pulseWidth = 1000;
-            }
-        }
+    public void setMotorSpeed(int speed) {
+        int pulseWidth = 1450 + -speed*5;
+        pwm.high();
+        sleepMicro(pulseWidth);
+        pwm.low();
+        sleepMicro(20000 - pulseWidth);
     }
 
     private static void sleepMicro(int delay) {
