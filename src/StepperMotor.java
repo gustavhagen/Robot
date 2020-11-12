@@ -1,8 +1,8 @@
 import com.pi4j.io.gpio.*;
 
 public class StepperMotor {
-    private static GpioPinDigitalOutput pul = null;
-    private static GpioPinDigitalOutput dir = null;
+    private GpioPinDigitalOutput pul = null;
+    private GpioPinDigitalOutput dir = null;
 
     private int currentPosition = 0;
     private long lastPulseTime = 0;

@@ -37,8 +37,6 @@ public class Test {
         stepperMotor1 = new StepperMotor(cameraPul, cameraDir);
         stepperMotor2 = new StepperMotor(turnPul, turnDir);
 
-        stepperMotor1.moveUp(100);
-        stepperMotor2.moveUp(100);
 
 
 //        while (true) {
