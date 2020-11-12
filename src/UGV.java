@@ -3,6 +3,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +30,7 @@ public class UGV {
 
             System.out.println("Connected UGV to server!");
             System.out.println("Running UGV...");
-            threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
+            //threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
             threadPool.execute(new UGVController(socket, objectInputStream, objectOutputStream));
 
         } catch (UnknownHostException e) {

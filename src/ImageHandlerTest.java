@@ -20,6 +20,7 @@ public class ImageHandlerTest implements Runnable {
     private int imageCounter = 0;
     private volatile boolean captureImage;
     private volatile boolean run = true;
+    private static Date date = new Date();
 
 
     public ImageHandlerTest(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) {
@@ -29,16 +30,16 @@ public class ImageHandlerTest implements Runnable {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         camera = new VideoCapture(0);
-        System.out.println("Found Camera!");
+        System.out.println("[UGV] Found Camera!");
         camera.set(3, 1920);    // Width of image
         camera.set(4, 1080);    // Height of image
 //        camera.set(5, 1);       // Framerate
 //        camera.set(20, 0);      // Sharpness
 //        camera.set(39, 0);      // Auto-focus
 //        camera.set(22, 100);    // Gamma
-        System.out.println("Resolution Set!");
+        System.out.println("[Camera] Resolution Set!");
         if (!camera.isOpened()) {
-            System.out.println("Camera not opened!");
+            System.out.println("[UGV] Camera not opened!");
         }
     }
 
@@ -56,13 +57,13 @@ public class ImageHandlerTest implements Runnable {
                     Imgcodecs.imencode(".jpg", imageMatrix, imageBytes);
                     int imageSize = (int) (imageBytes.total() * imageBytes.elemSize());
 
-                    ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "05.11.2020", "jpg");
+                    ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize, imageBytes.toArray(), "" + date, "jpg");
                     objectOutputStream.writeObject(imageObject);
                     imageCounter++;
                 }
                 Thread.sleep(100);
             } catch (IOException e) {
-                System.out.println("Could not send image.");
+                System.out.println("[UGV] Could not send image.");
                 e.printStackTrace();
             }
             catch (InterruptedException e){

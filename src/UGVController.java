@@ -11,7 +11,6 @@ public class UGVController implements Runnable {
     private StepperMotor stepperCamera;
     private StepperMotor stepperTurn;
     private DriveMotor driveMotor;
-
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
@@ -28,14 +27,15 @@ public class UGVController implements Runnable {
 
     private static final GpioController gpioController = GpioFactory.getInstance();
 
-    // Instance variables for Stepper Motors
+    // Instance pins for Stepper Motors
     GpioPinDigitalOutput stepperCameraPul;
     GpioPinDigitalOutput stepperCameraDir;
     GpioPinDigitalOutput stepperTurnPul;
     GpioPinDigitalOutput stepperTurnDir;
 
-    // Instance variables for DC motor
+    // Instance pins for DC motor with encoder
     GpioPinDigitalOutput driveMotorPin;
+
 
     public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) throws IOException {
         this.socket = socket;
@@ -48,13 +48,12 @@ public class UGVController implements Runnable {
         stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_06); // Pin 22
         stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Pin 11
 
-        // Instance pins for DC motor
+        // Instance pins for DC motor with encoder
         driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
 
-        // Make the object for det motors
-        stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
-        stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
         driveMotor = new DriveMotor(driveMotorPin);
+        stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
+        stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
     }
 
     public void run() {
@@ -67,7 +66,6 @@ public class UGVController implements Runnable {
 
                 if (command.getCommand() != null) {
                     switch (command.getCommand()) {
-
                         case "manual":
                             if (!autoMode) {
                                 wasd = command.getWasd();
@@ -112,7 +110,6 @@ public class UGVController implements Runnable {
         }
     }
 
-
     private void manualDrive() {
         int speed = 0;
 
@@ -155,7 +152,7 @@ public class UGVController implements Runnable {
     private void manualTurn() {
         int turnPosition = 0;
         int maxTurnPosition = 500;
-        //int counter = 0;
+
         boolean left;
         boolean right;
 
@@ -166,7 +163,6 @@ public class UGVController implements Runnable {
         while (manualMode) {
             left = wasd[1];
             right = wasd[3];
-
 
             if (System.nanoTime() >= newTime) {
                 if (right && !left && turnPosition < maxTurnPosition) {
@@ -185,7 +181,7 @@ public class UGVController implements Runnable {
     private void manualCamera() {
         int height = 0;
         int maxHeight = 20000;
-        //int counter = 0;
+
         boolean up;
         boolean down;
         boolean left;
@@ -208,11 +204,7 @@ public class UGVController implements Runnable {
                     }
                     if (down && !up && height > -maxHeight) {
                         height--;
-                    } //if(!left && !right && turnPosition > 0){
-                    //turnPosition--;
-                    //}if(!left && !right && turnPosition < 0){
-                    //    turnPosition++;
-                    //}
+                    }
                     newTime = System.nanoTime() + refreshDelay;
                 }
             }
