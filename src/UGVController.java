@@ -5,6 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
+/*
+* This is the class that runs the UGV in manual mode. The user (GUI) sends commands in form of
+* "w", "a", "s" or "d" to drive forward, backwards, left and right. The user also sends commands
+* to move the camera up and down.
+ */
 
 public class UGVController implements Runnable {
     private Socket socket;
@@ -14,30 +19,37 @@ public class UGVController implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
+    // The max speed the UGV can drive is made as an Atomic due to thread-safety.
     private AtomicInteger maxSpeed = new AtomicInteger();
 
+    // Auto and manual booleans made volatile due to thread-safety
     private volatile boolean autoMode = false;
-
-    private volatile boolean[] wasd;
     private volatile boolean manualMode;
 
+    // Volatile boolean array that contains the w, a, s, and d -keys for the driving of the UGV.
+    private volatile boolean[] wasd;
+
+    // Creates three threads which is going to do three different tasks at the same time.
     Thread manualDriveThread;
     Thread manualTurnThread;
     Thread manualCameraThread;
 
+    // Java needs to instance a GpioController to start the IO-pins on the Raspberry Pi.
     private static final GpioController gpioController = GpioFactory.getInstance();
 
-    // Instance pins for Stepper Motors
+    // Instance pins for Stepper Motors as outputs
     GpioPinDigitalOutput stepperCameraPul;
     GpioPinDigitalOutput stepperCameraDir;
     GpioPinDigitalOutput stepperTurnPul;
     GpioPinDigitalOutput stepperTurnDir;
 
-    // Instance pins for DC motor with encoder
+    // Instance pins for DC motor as outputs
     GpioPinDigitalOutput driveMotorPin;
 
-
-    public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) throws IOException {
+    /*
+    * @param adsda
+    */
+    public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) {
         this.socket = socket;
         this.objectInputStream = objectInputStream;
         this.objectOutputStream = objectOutputStream;
