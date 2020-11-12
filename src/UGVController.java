@@ -81,6 +81,7 @@ public class UGVController implements Runnable {
         try {
             Command initCommand = new Command("UGV", 0, null, null);
             objectOutputStream.writeObject(initCommand);    // Tells the server that this is an UGV
+            System.out.println(">>> Sent command to user telling this is an UGV!");
 
             while (true) {
                 Command command = (Command) objectInputStream.readObject();  // Gets a command from the server.

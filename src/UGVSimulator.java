@@ -18,16 +18,24 @@ public class UGVSimulator implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
+    // Volatile varibales used in the run()-method
     private volatile boolean autoMode = false;
-
     private volatile boolean[] wasd;
     private volatile boolean manualMode;
 
+    // Total images the user want the UGV to take. Atomic for thread-safety.
     private AtomicInteger totalImages = new AtomicInteger();
 
+    // Two threads that are running in the run()-method
     Thread imageThread;
     Thread autonomousThread;
 
+    /**
+     *
+     * @param socket The socket that is connected to the server.
+     * @param objectOutputStream The stream that sends data from the simulator to the server.
+     * @param objectInputStream The stream that receives data from the server.
+     */
     public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
         this.socket = socket;
         this.objectOutputStream = objectOutputStream;
@@ -36,14 +44,17 @@ public class UGVSimulator implements Runnable {
 
     public void run() {
         try {
+            // Makes a command object that tells the server that this is an UGV.
             Command initCommand = new Command("UGV", 0, null, null);
             objectOutputStream.writeObject(initCommand);
             System.out.println(">>> Sent command to user telling this is an UGV!");
 
 
             while (true) {
+                // UGV receives commands continuous from the server.
                 Command command = (Command) objectInputStream.readObject();
 
+                // Checks if the command from the server not equals null
                 if (command.getCommand() != null) {
                     switch (command.getCommand()) {
 
