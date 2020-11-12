@@ -7,14 +7,14 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/*
+/**
 * This project is the main project in the course Real-Time Programming at NTNU in Ålesund.
 *
 * This is the main class for the UGV in this project. The UGV connects to a server running on the given
 * hosts. There is set up 2 different hosts while testing the system. The port is also given.
 * After connecting to the server, the UGV-class runs either the UGVController class or the UGVSimulator.
 
-* Author: Gustav Sørdal Hagen
+* @author Gustav Sørdal Hagen
  */
 
 public class UGV {

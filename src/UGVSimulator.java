@@ -4,6 +4,13 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is the class that simulates the autonomous execution for the UGV.
+ * The class receives a command "start" from the server and the simulation starts automatically.
+ * This class also contains image capturing.
+ * @author Gustav Sørdal Hagen
+ */
+
 public class UGVSimulator implements Runnable {
     Socket socket;
     ImageHandler imageHandler;
@@ -16,13 +23,8 @@ public class UGVSimulator implements Runnable {
     private volatile boolean[] wasd;
     private volatile boolean manualMode;
 
-    private AtomicInteger maxSpeed = new AtomicInteger();
     private AtomicInteger totalImages = new AtomicInteger();
 
-
-
-    Thread manualDriveThread;
-    Thread manualTurnThread;
     Thread imageThread;
     Thread autonomousThread;
 
@@ -44,31 +46,6 @@ public class UGVSimulator implements Runnable {
 
                 if (command.getCommand() != null) {
                     switch (command.getCommand()) {
-
-                        case "manual":
-                            if (!autoMode) {
-                                wasd = command.getWasd();
-                                maxSpeed.set(command.getValue());
-                                if (!manualMode) {
-                                    System.out.println("[UGV] Entered manual mode...");
-                                    manualMode = true;
-                                    manualDriveThread = new Thread(this::manualDrive);
-                                    manualTurnThread = new Thread(this::manualTurn);
-                                    manualTurnThread.start();
-                                    manualDriveThread.start();
-                                }
-                            }
-                            break;
-
-                        case "manualStop":
-                            if (!autoMode) {
-                                if (manualMode) {
-//                                    manualDriveThread.interrupt();
-//                                    manualTurnThread.interrupt();
-                                }
-                                manualMode = false;
-                            }
-                            break;
 
                         case "start":
                             if (!manualMode && command.getValue() >= 9) {
@@ -113,85 +90,6 @@ public class UGVSimulator implements Runnable {
         } //catch (InterruptedException e) {
         // e.printStackTrace();
         //}
-    }
-
-    private void manualDrive() {
-        int speed = 0;
-        int counter = 0;
-
-        boolean forward;
-        boolean backward;
-
-        while (manualMode) {
-            forward = wasd[0];
-            backward = wasd[2];
-
-
-            if (forward && !backward && speed < maxSpeed.get()) {
-                speed++;
-            }
-            if (backward && !forward && speed > -maxSpeed.get()) {
-                speed--;
-            }
-            if ((!forward) && (speed > 0)) {
-                speed--;
-            }
-            if ((!backward) && (speed < 0)) {
-                speed++;
-            }
-            if (speed > maxSpeed.get()) {
-                speed--;
-            }
-            if (speed < -maxSpeed.get()) {
-                speed++;
-            }
-            counter++;
-            System.out.println("w: " + wasd[0] +", a: "+ wasd[1] + ", s: " + wasd[2] + ", d: " + wasd[3]);
-            if (counter > 50) {
-                System.out.println("[UGV] Moving: " + speed);
-                counter = 0;
-            }
-
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        speed = 0;
-    }
-
-    private void manualTurn() {
-        int turnPosition = 0;
-        int counter = 0;
-        boolean left;
-        boolean right;
-
-        while (manualMode) {
-            left = wasd[1];
-            right = wasd[3];
-
-            if (right && !left && turnPosition < 10) {
-                turnPosition++;
-            }
-            if (left && !right && turnPosition > -10) {
-                turnPosition--;
-            }
-
-            counter++;
-
-            if (counter > 10) {
-                System.out.println("[UGV] Turning: " + turnPosition);
-                counter = 0;
-            }
-
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        turnPosition = 0;
     }
 
     private void autonomousDrive() {
