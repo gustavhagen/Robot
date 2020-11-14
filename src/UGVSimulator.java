@@ -58,37 +58,40 @@ public class UGVSimulator implements Runnable {
                 if (command.getCommand() != null) {
                     switch (command.getCommand()) {
 
-                        case "start":
+                        case "start":                   // If command is "start", UGV is doing this state
+                            // Checks if UGV is in manual mode, and total images is less or equals to 9, cna be edited.
                             if (!manualMode && command.getValue() >= 9) {
                                 System.out.println("[UGV] Started UGV in automatic control...");
                                 autoMode = true;
-                                totalImages.set(command.getValue());
+                                totalImages.set(command.getValue());        // Sets the total images to the value from the command
 
+                                // Creates an imageHandler to take picture, and creates a Thread for it.
                                 imageHandlerTest = new ImageHandlerTest(socket, command.getValue(), objectOutputStream);
                                 imageThread = new Thread(imageHandlerTest);
                                 imageThread.start();
+                                // Creates an Thread that is driving the UGV in autonomous mode.
                                 autonomousThread = new Thread(this::autonomousDrive);
                                 autonomousThread.start();
                                 //Thread.sleep(60000);
                             }
                             break;
 
-                        case "stop":
+                        case "stop":                    // Stops the UGV in autonomous mode.
                             if (!manualMode) {
                                 System.out.println("[UGV] Stopped UGV in automatic control...");
                                 autoMode = false;
                                 totalImages.set(0);
-                                imageHandlerTest.stopThread();
+                                imageHandlerTest.stopThread();      // Stops the imageThread.
 //                                imageThread.interrupt();
 //                                autonomousThread.interrupt();
                             }
                             break;
 
-                        case "ping":
+                        case "ping":            // Ping from the server for checking connection.
                             //System.out.println("Ping from server...");
                             break;
 
-                        default:
+                        default:                // Prints "Wrong command!" if the command is not equal to any of the cases.
                             System.out.println("Wrong command!");
                             break;
                     }
@@ -103,6 +106,11 @@ public class UGVSimulator implements Runnable {
         //}
     }
 
+    /**
+     * Simulates the UGV when the UGV shall run in autonomous mode.
+     * Contains a switch-case of different tasks the UGV are going to do.
+     *
+     */
     private void autonomousDrive() {
         try {
             int state = 0;
@@ -114,6 +122,7 @@ public class UGVSimulator implements Runnable {
 
             while (autoMode) {
                 switch (state) {
+
                     case 0:
                         System.out.println("[UGV] Lining up...");
                         Thread.sleep(5000);
