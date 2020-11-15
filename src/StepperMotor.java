@@ -7,8 +7,8 @@ import com.pi4j.io.gpio.*;
  */
 public class StepperMotor {
     // The pins needed for the stepper motor to work.
-    private GpioPinDigitalOutput pul = null;    // The pin to send the pulse
-    private GpioPinDigitalOutput dir = null;    // The direction for the stepper motor
+    private final GpioPinDigitalOutput pul;    // The pin to send the pulse
+    private final GpioPinDigitalOutput dir;    // The direction for the stepper motor
 
     // Variables used in the class
     private int currentPosition = 0;
@@ -28,8 +28,8 @@ public class StepperMotor {
     /**
      * The motor that makes the stepper motor turn. Uses the pins with
      * a delay. This method is using a delay with nanoseconds.
-     * @param steps
-     * @param speed
+     * @param steps The steps to turn
+     * @param speed The speed of the motor, in microseconds
      */
     public void stepperMotorAct(int steps, long speed) {
         // Turning the motor with a direction, as long as current position is less than steps to turn.
@@ -61,7 +61,7 @@ public class StepperMotor {
      */
     public static void sleepNano(long delay) {
         long initialTime = System.nanoTime();
-        long updatedTime = 0;
+        long updatedTime;
         do {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay) >= updatedTime);

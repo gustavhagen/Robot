@@ -79,7 +79,7 @@ public class UGVController implements Runnable {
      * Runs the execution for the UGVController. Sends a command telling this is an UGV to the server.
      * Gets a command where the server tells that the UGV are going to drive in manual mode.
      *
-     * @throws IOException If an I/O error occured
+     * @throws IOException If an I/O error occurred
      * @throws ClassNotFoundException If no class was found.
      */
     public void run() {
@@ -117,8 +117,8 @@ public class UGVController implements Runnable {
                         case "manualStop":                     // Stopping the manual drive for the UGV
                             if (!autoMode) {
                                 if (manualMode) {
-//                                    manualDriveThread.interrupt();
-//                                    manualTurnThread.interrupt();
+                                    manualDriveThread.interrupt();
+                                    manualTurnThread.interrupt();
                                 }
                                 manualMode = false;
                             }

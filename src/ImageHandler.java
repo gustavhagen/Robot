@@ -19,13 +19,13 @@ public class ImageHandler implements Runnable {
 
     // Creates some variables to use in the class.
     private Socket socket;
-    private int totalImages;
-    private ObjectOutputStream objectOutputStream;
-    private VideoCapture camera;
+    private final int totalImages;
+    private final ObjectOutputStream objectOutputStream;
+    private final VideoCapture camera;
     private int imageCounter = 0;
     private volatile boolean captureImage;
     private volatile boolean run = true;
-    private static Date date = new Date();
+    private static final Date date = new Date();
 
     /**
      * The constructor for the ImageHandler class.

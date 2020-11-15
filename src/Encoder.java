@@ -7,8 +7,8 @@ import com.pi4j.io.gpio.*;
  */
 public class Encoder {
     // Creates the class-variables for the Encoder class
-    private GpioPinDigitalInput encoderA;
-    private GpioPinDigitalInput encoderB;
+    private final GpioPinDigitalInput encoderA;
+    private final GpioPinDigitalInput encoderB;
     private boolean A;
     private boolean B;
     private boolean lastA;

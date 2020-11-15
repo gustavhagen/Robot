@@ -16,8 +16,8 @@ public class UGVSimulator implements Runnable {
     Socket socket;
     ImageHandler imageHandler;
     //ImageHandlerTest imageHandlerTest;
-    private ObjectOutputStream objectOutputStream;
-    private ObjectInputStream objectInputStream;
+    private final ObjectOutputStream objectOutputStream;
+    private final ObjectInputStream objectInputStream;
 
     // Volatile varibales used in the run()-method
     private volatile boolean autoMode = false;
@@ -25,10 +25,10 @@ public class UGVSimulator implements Runnable {
     private volatile boolean manualMode;
 
     // Total images the user want the UGV to take. Atomic for thread-safety.
-    private AtomicInteger totalImages = new AtomicInteger();
+    private final AtomicInteger totalImages = new AtomicInteger();
 
     // The max speed the UGV can drive is made as an Atomic due to thread-safety.
-    private AtomicInteger maxSpeed = new AtomicInteger();
+    private final AtomicInteger maxSpeed = new AtomicInteger();
 
     // Two threads that are running in the run()-method
     Thread imageThread;
@@ -42,7 +42,7 @@ public class UGVSimulator implements Runnable {
      * @param socket The socket that is connected to the server.
      * @param objectOutputStream The stream that sends data from the simulator to the server.
      * @param objectInputStream The stream that receives data from the server.
-     * @throws IOException If an I/O error occured
+     * @throws IOException If an I/O error occurred
      * @throws ClassNotFoundException If no class was found.
      */
     public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
@@ -205,7 +205,7 @@ public class UGVSimulator implements Runnable {
                         break;
 
                     case 3:    // Capturing images
-                        if (imageCounter < totalImages) {       // If the amout of captured images is below total images to capture.
+                        if (imageCounter < totalImages) {       // If the amount of captured images is below total images to capture.
                             System.out.println("[UGV] Capturing image...");
                             Thread.sleep(5000);
                             captureImageAndWait();          // Using this method to capture images.
@@ -218,7 +218,7 @@ public class UGVSimulator implements Runnable {
                         if (imageCounter >= totalImages) {
                             state = 4;
                         }
-                        // Going back to where the UGV is moving the camrea up/down
+                        // Going back to where the UGV is moving the camera up/down
                         else {
                             state = 2;
                         }

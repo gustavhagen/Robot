@@ -7,7 +7,7 @@ import com.pi4j.io.gpio.*;
  */
 public class DriveMotor {
     // The pin needed for the DC motor to work.
-    private GpioPinDigitalOutput pwm = null;
+    private final GpioPinDigitalOutput pwm;
 
     /**
      * The Constructor for the DC motor class.
@@ -39,7 +39,7 @@ public class DriveMotor {
      */
     private static void sleepMicro(int delay) {
         long initialTime = System.nanoTime();
-        long updatedTime = 0;
+        long updatedTime;
         do {
             updatedTime = System.nanoTime();
         } while ((initialTime + delay * 1000) >= updatedTime);  // * 1000 to get the delay in microseconds

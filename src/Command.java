@@ -3,10 +3,10 @@ import java.util.List;
 
 public class Command implements Serializable {
     private static final long serialVersionUID = 2780459376294108402L;
-    private String command;
-    private int value;
-    private boolean[] wasd;
-    private List<Integer> UGVs;
+    private final String command;
+    private final int value;
+    private final boolean[] wasd;
+    private final List<Integer> UGVs;
 
     public Command(String command, int value, boolean[] wasd, List<Integer> UGVs) {
         this.command = command;
