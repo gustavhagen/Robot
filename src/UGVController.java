@@ -9,18 +9,20 @@ import java.util.concurrent.atomic.AtomicInteger;
  * This is the class that runs the UGV in manual mode. The user (GUI) sends commands in form of
  * "w", "a", "s" or "d" to drive forward, backwards, left and right. The user also sends commands
  * to move the camera up and down.
+ *
+ * @author Gustav Sørdal Hagen
  */
 
 public class UGVController implements Runnable {
     private Socket socket;
-    private StepperMotor stepperCamera;
-    private StepperMotor stepperTurn;
-    private DriveMotor driveMotor;
-    private ObjectOutputStream objectOutputStream;
-    private ObjectInputStream objectInputStream;
+    private final StepperMotor stepperCamera;
+    private final StepperMotor stepperTurn;
+    private final DriveMotor driveMotor;
+    private final ObjectOutputStream objectOutputStream;
+    private final ObjectInputStream objectInputStream;
 
     // The max speed the UGV can drive is made as an Atomic due to thread-safety.
-    private AtomicInteger maxSpeed = new AtomicInteger();
+    private final AtomicInteger maxSpeed = new AtomicInteger();
 
     // Auto and manual booleans made volatile due to thread-safety
     private volatile boolean autoMode = false;
@@ -73,9 +75,12 @@ public class UGVController implements Runnable {
         stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
     }
 
-    /*
+    /**
      * Runs the execution for the UGVController. Sends a command telling this is an UGV to the server.
      * Gets a command where the server tells that the UGV are going to drive in manual mode.
+     *
+     * @throws IOException If an I/O error occured
+     * @throws ClassNotFoundException If no class was found.
      */
     public void run() {
         try {
@@ -185,6 +190,7 @@ public class UGVController implements Runnable {
                     speed++;
                 }
                 // Sets the speed to the DC Motor using the setMotorSpeed() from DriveMotor-class.
+                System.out.println("W: " + wasd[0] + ", A: " + wasd[1] + ", S: " + wasd[2] + ", D: " + wasd[3]);
                 driveMotor.setMotorSpeed(speed);
             }
         }

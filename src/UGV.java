@@ -21,13 +21,20 @@ public class UGV {
     private final static String HOST = "10.22.192.92";
     private final static String SONDRE_HOST = "83.243.240.94";
     private final static int PORT = 42069;
-    private final static int POOL_SIZE = 3;
+    private final static int POOL_SIZE = 2;
     private static Socket socket;
     private static ObjectOutputStream objectOutputStream;
     private static ObjectInputStream objectInputStream;
 
+    // Creates a Thread-pool
     private static ExecutorService threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 
+    /**
+     * Runs the UGV
+     * @param args
+     * @throws UnknownHostException If the UGV could not connect to a server
+     * @throws IOException If an I/O error occured.
+     */
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to server...");
@@ -42,8 +49,8 @@ public class UGV {
             System.out.println("Connected UGV to server!");
 
             // Executes the classes that runs the UGV.
-            //threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
-            threadPool.execute(new UGVController(socket, objectInputStream, objectOutputStream));
+            threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
+            //threadPool.execute(new UGVController(socket, objectInputStream, objectOutputStream));
             System.out.println("Running UGV...");
 
         } catch (UnknownHostException e) {
