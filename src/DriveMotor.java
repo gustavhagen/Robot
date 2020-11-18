@@ -11,6 +11,7 @@ public class DriveMotor {
 
     /**
      * The Constructor for the DC motor class.
+     *
      * @param pwm The GPIO-pin to connect on the Raspberry Pi
      */
     public DriveMotor(GpioPinDigitalOutput pwm) {
@@ -21,10 +22,11 @@ public class DriveMotor {
      * Method that makes the DC motor to start. The pin assigned to the class
      * is set high and low rapidly, with a little delay. Optional pulse width for
      * this DC motor is 20 microseconds pr pulse.
+     *
      * @param speed The speed to set to the motor.
      */
     public void setMotorSpeed(int speed) {
-        int pulseWidth = 1450 + -speed*5;       // -speed because speed can be negative.
+        int pulseWidth = 1450 + -speed * 5;       // -speed because speed can be negative.
         pwm.high();
         sleepMicro(pulseWidth);
         pwm.low();
@@ -35,6 +37,7 @@ public class DriveMotor {
     /**
      * A method that works ass a delay. Using the system-time for the operating system
      * for the computer/Raspberry Pi.
+     *
      * @param delay The delay to set in microseconds.
      */
     private static void sleepMicro(int delay) {

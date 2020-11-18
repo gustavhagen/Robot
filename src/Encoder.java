@@ -16,6 +16,7 @@ public class Encoder {
 
     /**
      * The constructor for the Encoder-class. Takes inn two parameters as pins for the encoder.
+     *
      * @param encoderA The EncoderA pin.
      * @param encoderB The EncoderB pin.
      */
@@ -26,6 +27,7 @@ public class Encoder {
 
     /**
      * This method returns the amount of revolutions the DC motor as turned.
+     *
      * @return The amount of revolutions the DC motor as turned.
      */
     public int encoderAct() {

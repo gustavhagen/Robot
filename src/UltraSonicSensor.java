@@ -16,6 +16,7 @@ public class UltraSonicSensor {
 
     /**
      * The constructor for the Ultrasonic Sensor class.
+     *
      * @param trig The pin for trigging a pulse.
      * @param echo The pin for the echo for the trigged pulse.
      */
@@ -26,6 +27,7 @@ public class UltraSonicSensor {
 
     /**
      * Method that sets the trigger high and low, returns the distance to the object.
+     *
      * @return The distance to the object in centimeters (cm)
      */
     public double getDistance() {
@@ -51,6 +53,7 @@ public class UltraSonicSensor {
     /**
      * A method that works ass a delay. Using the system-time for the operating system
      * for the computer/Raspberry Pi.
+     *
      * @param delay The delay to set in microseconds.
      */
     private static void sleepMicro(int delay) {

@@ -13,9 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class UGVSimulator implements Runnable {
-    Socket socket;
-    ImageHandler imageHandler;
-    //ImageHandlerTest imageHandlerTest;
+    private final Socket socket;
+    private ImageHandler imageHandler;
     private final ObjectOutputStream objectOutputStream;
     private final ObjectInputStream objectInputStream;
 
@@ -38,11 +37,10 @@ public class UGVSimulator implements Runnable {
     Thread manualTurnThread;
 
     /**
-     *
-     * @param socket The socket that is connected to the server.
+     * @param socket             The socket that is connected to the server.
      * @param objectOutputStream The stream that sends data from the simulator to the server.
-     * @param objectInputStream The stream that receives data from the server.
-     * @throws IOException If an I/O error occurred
+     * @param objectInputStream  The stream that receives data from the server.
+     * @throws IOException            If an I/O error occurred
      * @throws ClassNotFoundException If no class was found.
      */
     public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
@@ -393,7 +391,7 @@ public class UGVSimulator implements Runnable {
     }
 
     /**
-     * Capturing and image using the imageHandler Class.
+     * Capturing an image using the imageHandler Class.
      */
     private void captureImageAndWait() {
         imageHandler.captureImage();

@@ -4,8 +4,6 @@ import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
@@ -29,8 +27,9 @@ public class ImageHandler implements Runnable {
 
     /**
      * The constructor for the ImageHandler class.
-     * @param socket The socket that is connected to the server.
-     * @param totalImages Total images to capture
+     *
+     * @param socket             The socket that is connected to the server.
+     * @param totalImages        Total images to capture
      * @param objectOutputStream The outputstream that is connected to the socket.
      */
     public ImageHandler(Socket socket, int totalImages, ObjectOutputStream objectOutputStream) {
@@ -52,7 +51,8 @@ public class ImageHandler implements Runnable {
     /**
      * Runs the capturing of an image. This method runs all the time when the
      * imageThread in the UGVSimulator-class is enabled.
-     * @throws IOException If the ImageHandler could not send an image.
+     *
+     * @throws IOException          If the ImageHandler could not send an image.
      * @throws InterruptedException If the Thread.sleep()-method is interrupted-
      */
     @Override
@@ -78,7 +78,7 @@ public class ImageHandler implements Runnable {
 
                     // Creates an imageObject to send to the server.
                     ImageObject imageObject = new ImageObject("Image" + imageCounter, imageSize,
-                                                                imageBytes.toArray(), "" + date, "jpg");
+                            imageBytes.toArray(), "" + date, "jpg");
 
                     // Writes the imageObject to the outputstream that sends the image to the server
                     objectOutputStream.writeObject(imageObject);
@@ -88,8 +88,7 @@ public class ImageHandler implements Runnable {
             } catch (IOException e) {
                 System.out.println("[UGV] Could not send image.");
                 e.printStackTrace();
-            }
-            catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -105,23 +104,17 @@ public class ImageHandler implements Runnable {
     /**
      * Sets the run-variable in the Run()-method to false. The loop stops.
      */
-    public void stopThread(){
+    public void stopThread() {
         run = false;
     }
 
     /**
      * Returns true/false for the captureImage.
      * Used in the UGVSimulator when the UGV are going to wait while an image is being captured.
+     *
      * @return true/false for the captureImage.
      */
     public boolean isCapturingImage() {
         return captureImage;
     }
-
-//    private static final byte[] imageToByteArray(File image) throws IOException {
-//        BufferedImage bufferedImage = ImageIO.read(image);
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-//        return byteArrayOutputStream.toByteArray();
-//    }
 }

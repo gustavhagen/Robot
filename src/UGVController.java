@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * This is the class that runs the UGV in manual mode. The user (GUI) sends commands in form of
  * "w", "a", "s" or "d" to drive forward, backwards, left and right. The user also sends commands
@@ -51,8 +52,9 @@ public class UGVController implements Runnable {
     /**
      * The constructor for the UGVController class. Sets the pins for the components
      * used for the manual drive for the UGV.
-     * @param socket The socket which is connected to the server
-     * @param objectInputStream The stream that gets data from the server
+     *
+     * @param socket             The socket which is connected to the server
+     * @param objectInputStream  The stream that gets data from the server
      * @param objectOutputStream The stream that sends data to the server
      */
     public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) {
@@ -79,7 +81,7 @@ public class UGVController implements Runnable {
      * Runs the execution for the UGVController. Sends a command telling this is an UGV to the server.
      * Gets a command where the server tells that the UGV are going to drive in manual mode.
      *
-     * @throws IOException If an I/O error occurred
+     * @throws IOException            If an I/O error occurred
      * @throws ClassNotFoundException If no class was found.
      */
     public void run() {

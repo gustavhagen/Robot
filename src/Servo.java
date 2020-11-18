@@ -12,6 +12,7 @@ public class Servo {
 
     /**
      * The constructor for the Servo-class.
+     *
      * @param servoPin The pin assigned to the Raspberry Pi.
      */
     public Servo(GpioPinDigitalOutput servoPin) {
@@ -20,7 +21,8 @@ public class Servo {
 
     /**
      * Makes the servo turn.
-     * @param steps The amout of steps the servo are going to turn
+     *
+     * @param steps      The amout of steps the servo are going to turn
      * @param pulseWidth The pulse width for the servo.
      */
     private void servoAct(int steps, int pulseWidth) {
@@ -35,6 +37,7 @@ public class Servo {
     /**
      * A method that works ass a delay. Using the system-time for the operating system
      * for the computer/Raspberry Pi.
+     *
      * @param delay The delay to set in microseconds.
      */
     private static void sleepMicro(int delay) {

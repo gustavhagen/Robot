@@ -17,6 +17,7 @@ public class StepperMotor {
     /**
      * The constructor for the stepper motor class. Takes inn two parameters
      * as pins to connect to the Raspberry Pi
+     *
      * @param pul The pin to assign for the pulse to send
      * @param dir The pin that decides the direction for the motor
      */
@@ -28,6 +29,7 @@ public class StepperMotor {
     /**
      * The motor that makes the stepper motor turn. Uses the pins with
      * a delay. This method is using a delay with nanoseconds.
+     *
      * @param steps The steps to turn
      * @param speed The speed of the motor, in microseconds
      */
@@ -57,6 +59,7 @@ public class StepperMotor {
     /**
      * Same method as in the DriveMotor class but here the method
      * waits for a delay in nanoseconds, not microseconds.
+     *
      * @param delay The delay to wait, in nanoseconds
      */
     public static void sleepNano(long delay) {
