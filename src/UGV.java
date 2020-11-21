@@ -3,9 +3,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * This project is the main project in the course Real-Time Programming at NTNU in Ålesund.
@@ -21,38 +18,34 @@ public class UGV {
     private final static String HOST = "10.22.192.92";
     private final static String SONDRE_HOST = "83.243.240.94";
     private final static int PORT = 42069;
-    private final static int POOL_SIZE = 2;
-    private static Socket socket;
-    private static ObjectOutputStream objectOutputStream;
-    private static ObjectInputStream objectInputStream;
-
-    // Creates a Thread-pool
-    private static ExecutorService threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 
     /**
      * Runs the UGV
      *
      * @param args
      * @throws UnknownHostException If the UGV could not connect to a server
-     * @throws IOException          If an I/O error occured.
+     * @throws IOException          If an I/O error occurred.
      */
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to server...");
 
             // Connects to the server with the given host-address and port.
-            socket = new Socket(SONDRE_HOST, PORT);
+            Socket socket = new Socket(SONDRE_HOST, PORT);
 
             // Creates two streams for communicating with the server.
-            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
             System.out.println("Connected UGV to server!");
 
-            // Executes the classes that runs the UGV.
-            threadPool.execute(new UGVSimulator(socket, objectOutputStream, objectInputStream));
-            //threadPool.execute(new UGVController(socket, objectInputStream, objectOutputStream));
+            int threadPoolSize = 3;
+            UGVSimulator ugvSimulator = new UGVSimulator(socket, objectOutputStream, objectInputStream, threadPoolSize);
+            UGVController ugvController = new UGVController(socket, objectInputStream, objectOutputStream, threadPoolSize);
             System.out.println("Running UGV...");
+            ugvSimulator.run();
+            System.out.println("Program ended. UGV was done!");
+
 
         } catch (UnknownHostException e) {
             System.out.println("Could not connect to server...");

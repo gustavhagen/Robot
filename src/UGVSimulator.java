@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -12,13 +14,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Gustav Sørdal Hagen
  */
 
-public class UGVSimulator implements Runnable {
+public class UGVSimulator {
     private final Socket socket;
-    private ImageHandler imageHandler;
+    private  ImageHandler imageHandler;
+    private ImageHandlerSimulator imageHandlerSimulator;
     private final ObjectOutputStream objectOutputStream;
     private final ObjectInputStream objectInputStream;
 
-    // Volatile varibales used in the run()-method
+    // Volatile variables used in the run()-method
     private volatile boolean autoMode = false;
     private volatile boolean[] wasd;
     private volatile boolean manualMode;
@@ -29,24 +32,20 @@ public class UGVSimulator implements Runnable {
     // The max speed the UGV can drive is made as an Atomic due to thread-safety.
     private final AtomicInteger maxSpeed = new AtomicInteger();
 
-    // Two threads that are running in the run()-method
-    Thread imageThread;
-    Thread autonomousThread;
-    Thread manualDriveThread;
-    Thread manualCameraThread;
-    Thread manualTurnThread;
+    // Creates a thread pool for the simulator
+    private final ExecutorService threadPool;
 
     /**
      * @param socket             The socket that is connected to the server.
      * @param objectOutputStream The stream that sends data from the simulator to the server.
      * @param objectInputStream  The stream that receives data from the server.
-     * @throws IOException            If an I/O error occurred
-     * @throws ClassNotFoundException If no class was found.
+     * @param threadPoolSize     The size of the thread pool for the simulator
      */
-    public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
+    public UGVSimulator(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream, int threadPoolSize) {
         this.socket = socket;
         this.objectOutputStream = objectOutputStream;
         this.objectInputStream = objectInputStream;
+        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
     }
 
     public void run() {
@@ -55,7 +54,6 @@ public class UGVSimulator implements Runnable {
             Command initCommand = new Command("UGV", 0, null, null);
             objectOutputStream.writeObject(initCommand);
             System.out.println(">>> Sent command to user telling this is an UGV!");
-
 
             while (true) {
                 // UGV receives commands continuous from the server.
@@ -73,13 +71,11 @@ public class UGVSimulator implements Runnable {
                                 totalImages.set(command.getValue());        // Sets the total images to the value from the command
 
                                 // Creates an imageHandler to take picture, and creates a Thread for it.
-                                imageHandler = new ImageHandler(socket, command.getValue(), objectOutputStream);
-                                imageThread = new Thread(imageHandler);
-                                imageThread.start();
-                                // Creates an Thread that is driving the UGV in autonomous mode.
-                                autonomousThread = new Thread(this::autonomousDrive);
-                                autonomousThread.start();
-                                //Thread.sleep(60000);
+                                imageHandlerSimulator = new ImageHandlerSimulator(socket, command.getValue(), objectOutputStream);
+
+                                // Executes the simulation threads
+                                threadPool.execute(imageHandlerSimulator);
+                                threadPool.execute(this::autonomousDriveSimulator);
                             }
                             break;
 
@@ -88,9 +84,7 @@ public class UGVSimulator implements Runnable {
                                 System.out.println("[UGV] Stopped UGV in automatic control...");
                                 autoMode = false;
                                 totalImages.set(0);
-                                imageHandler.stopThread();      // Stops the imageThread.
-//                                imageThread.interrupt();
-//                                autonomousThread.interrupt();
+                                imageHandlerSimulator.stopThread();      // Stops the imageThread.
                             }
                             break;
 
@@ -99,38 +93,29 @@ public class UGVSimulator implements Runnable {
                                 wasd = command.getWasd();           // Gets the wasd-button which is pressed.
                                 maxSpeed.set(command.getValue());   // Sets the speed the GUI tells the UGV to drive in.
                                 if (!manualMode) {
-                                    System.out.println("Manual mode...");
+                                    System.out.println("[UGV] Manual simulations...");
                                     manualMode = true;
 
-                                    // Creates three threads that are going to run at the same time.
-                                    manualDriveThread = new Thread(this::manualDrive);
-                                    manualTurnThread = new Thread(this::manualTurn);
-                                    manualCameraThread = new Thread(this::manualCamera);
-
-                                    // Starts the threads which was created.
-                                    manualTurnThread.start();
-                                    manualDriveThread.start();
-                                    manualCameraThread.start();
+                                    // Executes the manual simulation threads
+                                    threadPool.execute(this::manualDriveSimulation);
+                                    threadPool.execute(this::manualTurnSimulation);
+                                    threadPool.execute(this::manualCameraSimulation);
                                 }
                             }
                             break;
 
                         case "manualStop":                     // Stopping the manual drive for the UGV
                             if (!autoMode) {
-                                if (manualMode) {
-//                                    manualDriveThread.interrupt();
-//                                    manualTurnThread.interrupt();
-                                }
                                 manualMode = false;
                             }
                             break;
 
                         case "ping":            // Ping from the server for checking connection.
-                            //System.out.println("Ping from server...");
+                            System.out.println("Ping from server...");
                             break;
 
                         default:                // Prints "Wrong command!" if the command is not equal to any of the cases.
-                            System.out.println("Wrong command!");
+                            System.out.println("[UGV] Wrong command!");
                             break;
                     }
                 }
@@ -150,7 +135,7 @@ public class UGVSimulator implements Runnable {
      *
      * @throws InterruptedException If Thread.sleep() was interrupted
      */
-    private void autonomousDrive() {
+    private void autonomousDriveSimulator() {
         try {
             // Creates some variables for this method
             int state = 0;
@@ -233,13 +218,13 @@ public class UGVSimulator implements Runnable {
                         System.out.println("[UGV] Done capturing images...");
                         System.out.println("[UGV] Going back to start position!");
                         Thread.sleep(6000);
-                        System.out.println("UGV DONE!!");
+                        System.out.println("[UGV] UGV DONE!!");
                         autoMode = false;
                         break;
 
                     // Wrong command from the server.
                     default:
-                        System.out.println("Wrong state value");
+                        System.out.println("[UGV] Wrong state value");
                         break;
 
                 }
@@ -253,7 +238,7 @@ public class UGVSimulator implements Runnable {
      * This is the method that drives the DC motor in manual mode.
      * This method uses the setMotorSpeed()-method from the DriveMotor-class.
      */
-    private void manualDrive() {
+    private void manualDriveSimulation() {
         // Speed to set for the DC Motor
         int speed = 0;
 
@@ -297,7 +282,7 @@ public class UGVSimulator implements Runnable {
                 if (speed < -maxSpeed.get()) {
                     speed++;
                 }
-                System.out.println("Driving with speed: " + speed);
+                System.out.println("[UGV] Driving with speed: " + speed);
             }
         }
         speed = 0;
@@ -307,7 +292,7 @@ public class UGVSimulator implements Runnable {
      * Method for turning the turn stepper motor in manual mode.
      * Uses the stepperMotorAct()-method from the StepperMotor class
      */
-    private void manualTurn() {
+    private void manualTurnSimulation() {
         // Creates two variables for the position for the turning.
         int turnPosition = 0;
         int maxTurnPosition = 500;
@@ -336,7 +321,7 @@ public class UGVSimulator implements Runnable {
                     turnPosition--;
                 }
                 newTime = System.nanoTime() + refreshDelay;
-                System.out.println("Turning: " + turnPosition);
+                System.out.println("[UGV] Turning: " + turnPosition);
             }
         }
         turnPosition = 0;
@@ -348,7 +333,7 @@ public class UGVSimulator implements Runnable {
      * The stepper motor for the camera moves if the user are pressing "w" or "s" if and only if
      * the buttons "a" AND "d" are pressed.
      */
-    private void manualCamera() {
+    private void manualCameraSimulation() {
         // Variables for the height the camera is in.
         int height = 0;
         int maxHeight = 20000;      // Steps
@@ -383,7 +368,7 @@ public class UGVSimulator implements Runnable {
                         height--;
                     }
                     newTime = System.nanoTime() + refreshDelay;
-                    System.out.println("Camera height: " + height);
+                    System.out.println("[UGV] Camera height: " + height);
                 }
             }
         }

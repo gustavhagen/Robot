@@ -88,4 +88,11 @@ public class ImageHandlerSimulator implements Runnable {
         }
         return null;
     }
+
+    /**
+     * Sets the run-variable in the Run()-method to false. The loop stops.
+     */
+    public void stopThread() {
+        run = false;
+    }
 }

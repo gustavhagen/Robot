@@ -9,8 +9,6 @@ public class Encoder {
     // Creates the class-variables for the Encoder class
     private final GpioPinDigitalInput encoderA;
     private final GpioPinDigitalInput encoderB;
-    private boolean A;
-    private boolean B;
     private boolean lastA;
     private int counter = 0;
 
@@ -32,10 +30,10 @@ public class Encoder {
      */
     public int encoderAct() {
         // A and B depends on if the pin for the encoder pins are high or low.
-        A = encoderA.isHigh();
-        B = encoderB.isHigh();
-        if (A != lastA) {
-            if (B != A) {
+        boolean a = encoderA.isHigh();
+        boolean b = encoderB.isHigh();
+        if (a != lastA) {
+            if (b != a) {
                 counter++;
             } else {
                 counter--;

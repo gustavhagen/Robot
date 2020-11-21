@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Gustav Sørdal Hagen
  */
 
-public class UGVController implements Runnable {
+public class UGVController {
     private Socket socket;
     private final StepperMotor stepperCamera;
     private final StepperMotor stepperTurn;
@@ -32,22 +34,11 @@ public class UGVController implements Runnable {
     // Volatile boolean array that contains the w, a, s, and d -keys for the driving of the UGV.
     private volatile boolean[] wasd;
 
-    // Creates three threads which is going to do three different tasks at the same time.
-    Thread manualDriveThread;
-    Thread manualTurnThread;
-    Thread manualCameraThread;
-
     // Java needs to instance a GpioController to start the IO-pins on the Raspberry Pi.
     private static final GpioController gpioController = GpioFactory.getInstance();
 
-    // Instance pins for Stepper Motors as outputs
-    GpioPinDigitalOutput stepperCameraPul;
-    GpioPinDigitalOutput stepperCameraDir;
-    GpioPinDigitalOutput stepperTurnPul;
-    GpioPinDigitalOutput stepperTurnDir;
-
-    // Instance pins for DC motor as outputs
-    GpioPinDigitalOutput driveMotorPin;
+    // Creates a thread pool for the simulator
+    private final ExecutorService threadPool;
 
     /**
      * The constructor for the UGVController class. Sets the pins for the components
@@ -56,20 +47,22 @@ public class UGVController implements Runnable {
      * @param socket             The socket which is connected to the server
      * @param objectInputStream  The stream that gets data from the server
      * @param objectOutputStream The stream that sends data to the server
+     * @param threadPoolSize     The size of the thread pool for the controller
      */
-    public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream) {
+    public UGVController(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, int threadPoolSize) {
         this.socket = socket;
         this.objectInputStream = objectInputStream;
         this.objectOutputStream = objectOutputStream;
+        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
-        // Instance pins for Stepper Motors
-        stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03); // Pin 15
-        stepperCameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02); // Pin 13
-        stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_06); // Pin 22
-        stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Pin 11
+        // Instance pins for Stepper Motors as outputs
+        GpioPinDigitalOutput stepperCameraPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03); // Pin 15
+        GpioPinDigitalOutput stepperCameraDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02); // Pin 13
+        GpioPinDigitalOutput stepperTurnPul = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_06); // Pin 22
+        GpioPinDigitalOutput stepperTurnDir = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Pin 11
 
-        // Instance pins for DC motor with encoder
-        driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
+        // Instance pins for DC motor as outputs
+        GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
 
         // Makes the objects with the given pins to the motors
         driveMotor = new DriveMotor(driveMotorPin);
@@ -103,31 +96,22 @@ public class UGVController implements Runnable {
                                     System.out.println("Manual mode...");
                                     manualMode = true;
 
-                                    // Creates three threads that are going to run at the same time.
-                                    manualDriveThread = new Thread(this::manualDrive);
-                                    manualTurnThread = new Thread(this::manualTurn);
-                                    manualCameraThread = new Thread(this::manualCamera);
-
-                                    // Starts the threads which was created.
-                                    manualTurnThread.start();
-                                    manualDriveThread.start();
-                                    manualCameraThread.start();
+                                    // Executes the manual driving threads
+                                    threadPool.execute(this::manualDrive);
+                                    threadPool.execute(this::manualTurn);
+                                    threadPool.execute(this::manualCamera);
                                 }
                             }
                             break;
 
                         case "manualStop":                     // Stopping the manual drive for the UGV
                             if (!autoMode) {
-                                if (manualMode) {
-                                    manualDriveThread.interrupt();
-                                    manualTurnThread.interrupt();
-                                }
                                 manualMode = false;
                             }
                             break;
 
                         case "ping":                            // Ping case for checking connection with server.
-                            //System.out.println("Ping from server...");
+                            System.out.println("Ping from server...");
                             break;
 
                         default:                                // If the command no one of the other cases.
@@ -192,7 +176,6 @@ public class UGVController implements Runnable {
                     speed++;
                 }
                 // Sets the speed to the DC Motor using the setMotorSpeed() from DriveMotor-class.
-                System.out.println("W: " + wasd[0] + ", A: " + wasd[1] + ", S: " + wasd[2] + ", D: " + wasd[3]);
                 driveMotor.setMotorSpeed(speed);
             }
         }

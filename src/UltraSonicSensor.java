@@ -7,18 +7,18 @@ import com.pi4j.io.gpio.*;
  */
 public class UltraSonicSensor {
     // Variables and pins used for the Ultrasonic sensors
-    private static final long TIMEOUT = 23200;   // If an pulse not is back after being sent in this time in microsec.
+    private static final long TIMEOUT = 23200;   // If an pulse not is back after being sent in this time in micros.
     private static final double DISTANCE_CONSTANT = 17014e-9;   // Constant for measure the distance to the object.
 
     // Pins to connect the Raspberry Pi
-    private GpioPinDigitalOutput trig = null;
-    private GpioPinDigitalInput echo = null;
+    private final GpioPinDigitalOutput trig;
+    private final GpioPinDigitalInput echo;
 
     /**
      * The constructor for the Ultrasonic Sensor class.
      *
-     * @param trig The pin for trigging a pulse.
-     * @param echo The pin for the echo for the trigged pulse.
+     * @param trig The pin for triggering a pulse.
+     * @param echo The pin for the echo for the triggered pulse.
      */
     public UltraSonicSensor(GpioPinDigitalOutput trig, GpioPinDigitalInput echo) {
         this.trig = trig;
