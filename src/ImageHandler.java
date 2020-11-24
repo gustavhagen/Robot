@@ -82,6 +82,7 @@ public class ImageHandler implements Runnable {
 
                     // Writes the imageObject to the outputstream that sends the image to the server
                     objectOutputStream.writeObject(imageObject);
+                    System.out.println("Image was sent!");
                     imageCounter++;
                 }
                 Thread.sleep(100);

@@ -56,6 +56,7 @@ public class ImageHandlerSimulator implements Runnable {
                         byte[] byteArray = imageToByteArray(image);
                         ImageObject imageObject = new ImageObject("Image" + imageCounter, image.length(), byteArray, "" + date, "jpg");
                         objectOutputStream.writeObject(imageObject);
+                        System.out.println("Image was sent!");
                     }
                     imageCounter++;
                 }

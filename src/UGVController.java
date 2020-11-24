@@ -24,6 +24,14 @@ public class UGVController {
     private final ObjectOutputStream objectOutputStream;
     private final ObjectInputStream objectInputStream;
 
+    // Creates objects for components that not was used in the final system
+//    private final UltraSonicSensor ultraSonicFrontRight;
+//    private final UltraSonicSensor ultrasonicFrontLeft;
+//    private final UltraSonicSensor ultrasonicBack;
+//    private final UltraSonicSensor ultrasonicSide;
+//    private final Servo cameraServo;
+//    private final Encoder encoder;
+
     // The max speed the UGV can drive is made as an Atomic due to thread-safety.
     private final AtomicInteger maxSpeed = new AtomicInteger();
 
@@ -31,7 +39,7 @@ public class UGVController {
     private volatile boolean autoMode = false;
     private volatile boolean manualMode;
 
-    // Volatile boolean array that contains the w, a, s, and d -keys for the driving of the UGV.
+    // Volatile boolean array that contains the w, a, s, and d -keys for driving of the UGV.
     private volatile boolean[] wasd;
 
     // Java needs to instance a GpioController to start the IO-pins on the Raspberry Pi.
@@ -64,10 +72,31 @@ public class UGVController {
         // Instance pins for DC motor as outputs
         GpioPinDigitalOutput driveMotorPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04); // Pin 16
 
+        // Instance pins for the other components that not was used in the final system
+//        GpioPinDigitalInput encoderA = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_28); // Pin 38
+//        GpioPinDigitalInput encoderB = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29); // Pin 40
+//        GpioPinDigitalOutput servoPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05); // Pin 18
+//        GpioPinDigitalOutput frontRightTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_21); // Pin 29
+//        GpioPinDigitalInput frontRightEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_22, PinPullResistance.PULL_DOWN); // Pin 31
+//        GpioPinDigitalOutput frontLeftTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_23); // Pin 33
+//        GpioPinDigitalInput frontLeftEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_24, PinPullResistance.PULL_DOWN); // Pin 35
+//        GpioPinDigitalOutput backTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_25); // Pin 37
+//        GpioPinDigitalInput backEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_26, PinPullResistance.PULL_DOWN); // Pin 32
+//        GpioPinDigitalOutput sideTrig = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_27); // Pin 36
+//        GpioPinDigitalInput sideEcho = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN);  // Pin 7
+
         // Makes the objects with the given pins to the motors
         driveMotor = new DriveMotor(driveMotorPin);
         stepperTurn = new StepperMotor(stepperTurnPul, stepperTurnDir);
         stepperCamera = new StepperMotor(stepperCameraPul, stepperCameraDir);
+
+        // Makes the objects for the components that not was used for the final system
+//        ultraSonicFrontRight = new UltraSonicSensor(frontRightTrig, frontRightEcho);
+//        ultrasonicFrontLeft = new UltraSonicSensor(frontLeftTrig, frontLeftEcho);
+//        ultrasonicBack = new UltraSonicSensor(backTrig, backEcho);
+//        ultrasonicSide = new UltraSonicSensor(sideTrig, sideEcho);
+//        cameraServo = new Servo(servoPin);
+//        encoder = new Encoder(encoderA, encoderB);
     }
 
     /**

@@ -193,7 +193,7 @@ public class UGVSimulator {
                             Thread.sleep(5000);
                             captureImageAndWait();          // Using this method to capture images.
                             System.out.println("[UGV] Image Captured!");
-                            System.out.println(">>> Sent Image to server!");
+                            System.out.println(">>> Sending Image to server!");
                         }
                         imageCounter++;
 
